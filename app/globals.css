@@ -1,0 +1,203 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Updated to Hogwarts magical theme colors */
+  --background: #ffffff;
+  --foreground: #1e3a78;
+  --card: #f8e9b9;
+  --card-foreground: #1e3a78;
+  --popover: #7c1f1f;
+  --popover-foreground: #ffffff;
+  --primary: #1e3a78;
+  --primary-foreground: #ffffff;
+  --secondary: #f0c14b;
+  --secondary-foreground: #1e3a78;
+  --muted: #f8e9b9;
+  --muted-foreground: #7c1f1f;
+  --accent: #f0c14b;
+  --accent-foreground: #1e3a78;
+  --destructive: #7c1f1f;
+  --destructive-foreground: #ffffff;
+  --border: #e0e0e0;
+  --input: #f8e9b9;
+  --ring: rgba(30, 58, 120, 0.5);
+  --chart-1: #1e3a78;
+  --chart-2: #f0c14b;
+  --chart-3: #7c1f1f;
+  --chart-4: #f8e9b9;
+  --chart-5: #ffffff;
+  --radius: 0.5rem;
+  --sidebar: #1e3a78;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #7c1f1f;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f0c14b;
+  --sidebar-accent-foreground: #1e3a78;
+  --sidebar-border: #e0e0e0;
+  --sidebar-ring: rgba(30, 58, 120, 0.5);
+  --font-source-sans: "Source Sans Pro", sans-serif;
+  --font-playfair: "Playfair Display", serif;
+}
+
+.dark {
+  /* Dark mode with mystical night theme */
+  --background: #0f1419;
+  --foreground: #f8e9b9;
+  --card: #1e3a78;
+  --card-foreground: #f8e9b9;
+  --popover: #7c1f1f;
+  --popover-foreground: #ffffff;
+  --primary: #f0c14b;
+  --primary-foreground: #1e3a78;
+  --secondary: #7c1f1f;
+  --secondary-foreground: #ffffff;
+  --muted: #1e3a78;
+  --muted-foreground: #f8e9b9;
+  --accent: #f0c14b;
+  --accent-foreground: #1e3a78;
+  --destructive: #7c1f1f;
+  --destructive-foreground: #ffffff;
+  --border: #2a4a7a;
+  --input: #1e3a78;
+  --ring: rgba(240, 193, 75, 0.5);
+  --chart-1: #f0c14b;
+  --chart-2: #1e3a78;
+  --chart-3: #7c1f1f;
+  --chart-4: #f8e9b9;
+  --chart-5: #ffffff;
+  --sidebar: #0f1419;
+  --sidebar-foreground: #f8e9b9;
+  --sidebar-primary: #f0c14b;
+  --sidebar-primary-foreground: #1e3a78;
+  --sidebar-accent: #7c1f1f;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #2a4a7a;
+  --sidebar-ring: rgba(240, 193, 75, 0.5);
+  --font-source-sans: "Source Sans Pro", sans-serif;
+  --font-playfair: "Playfair Display", serif;
+}
+
+@theme inline {
+  --font-sans: var(--font-source-sans);
+  --font-serif: var(--font-playfair);
+  --font-mono: var(--font-geist-mono);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Added magical animations and effects */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes sparkle {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes glow {
+  0%,
+  100% {
+    box-shadow: 0 0 5px rgba(240, 193, 75, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(240, 193, 75, 0.8), 0 0 30px rgba(240, 193, 75, 0.6);
+  }
+}
+
+.float-animation {
+  animation: float 3s ease-in-out infinite;
+}
+
+.sparkle-animation {
+  animation: sparkle 2s ease-in-out infinite;
+}
+
+.glow-effect {
+  animation: glow 2s ease-in-out infinite;
+}
+
+.magical-gradient {
+  background: linear-gradient(135deg, #1e3a78 0%, #7c1f1f 50%, #f0c14b 100%);
+}
+
+.starry-night {
+  background: radial-gradient(ellipse at top, #1e3a78 0%, #0f1419 100%);
+  position: relative;
+}
+
+.starry-night::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(2px 2px at 20px 30px, #f0c14b, transparent),
+    radial-gradient(2px 2px at 40px 70px, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(1px 1px at 90px 40px, #f0c14b, transparent),
+    radial-gradient(1px 1px at 130px 80px, rgba(255, 255, 255, 0.6), transparent),
+    radial-gradient(2px 2px at 160px 30px, #f0c14b, transparent);
+  background-repeat: repeat;
+  background-size: 200px 100px;
+  animation: sparkle 4s linear infinite;
+}

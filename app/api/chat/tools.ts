@@ -101,10 +101,16 @@ export const tools = {
             prompt: z.string().describe('The prompt to create an image based on'),
         }),
         execute: async ({ prompt }: { prompt: any }) => {
-            return await generateImage({
+            const result = await generateImage({
                 model: fal.image("fal-ai/flux/schnell"),
                 prompt,
-            })
+            });
+            
+            return {
+                type: 'image',
+                image: result.image.base64,
+                prompt: prompt
+            };
         },
     }),
 

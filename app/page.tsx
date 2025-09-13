@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Sparkles, BookOpen, Users, Wand2, Star, Crown, Scroll, Flame } from "lucide-react"
+import Link from "next/link"
 
 export default function HogwartsAILanding() {
   return (
@@ -34,7 +35,9 @@ export default function HogwartsAILanding() {
                 Pricing
               </a>
             </nav>
-            <Button className="glow-effect">Start Researching</Button>
+            <Link href="/chat">
+              <Button className="glow-effect">Start Researching</Button>
+            </Link>
           </div>
         </div>
       </header>
@@ -55,18 +58,22 @@ export default function HogwartsAILanding() {
               Experience magical research through our revolutionary AI agents that provide intelligent feedback and generate stunning images to enhance your discoveries.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="text-lg px-8 py-4 glow-effect">
-                <Wand2 className="w-5 h-5 mr-2" />
-                Begin Your Research Journey
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="text-lg px-8 py-4 bg-white/10 border-white/20 text-white hover:bg-white/20"
-              >
-                <BookOpen className="w-5 h-5 mr-2" />
-                Explore Research Areas
-              </Button>
+              <Link href="/chat">
+                <Button size="lg" className="text-lg px-8 py-4 glow-effect">
+                  <Wand2 className="w-5 h-5 mr-2" />
+                  Begin Your Research Journey
+                </Button>
+              </Link>
+              <Link href="/chat">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="text-lg px-8 py-4 bg-white/10 border-white/20 text-white hover:bg-white/20"
+                >
+                  <BookOpen className="w-5 h-5 mr-2" />
+                  Explore Research Areas
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
@@ -160,10 +167,12 @@ export default function HogwartsAILanding() {
                   <Badge variant="secondary" className="mb-4">
                     {professor.specialty}
                   </Badge>
-                  <Button className="w-full group-hover:glow-effect">
-                    <Users className="w-4 h-4 mr-2" />
-                    Start Research Session
-                  </Button>
+                  <Link href="/chat">
+                    <Button className="w-full group-hover:glow-effect">
+                      <Users className="w-4 h-4 mr-2" />
+                      Start Research Session
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             ))}
@@ -356,12 +365,14 @@ export default function HogwartsAILanding() {
                       </li>
                     ))}
                   </ul>
-                  <Button
-                    className={`w-full ${plan.popular ? "glow-effect" : ""}`}
-                    variant={plan.popular ? "default" : "outline"}
-                  >
-                    Start {plan.name} Plan
-                  </Button>
+                  <Link href="/chat">
+                    <Button
+                      className={`w-full ${plan.popular ? "glow-effect" : ""}`}
+                      variant={plan.popular ? "default" : "outline"}
+                    >
+                      Start {plan.name} Plan
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             ))}
@@ -380,18 +391,22 @@ export default function HogwartsAILanding() {
               Join thousands of researchers who have enhanced their investigations with intelligent AI agents, advanced feedback systems, and powerful image generation capabilities.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="text-lg px-8 py-4 bg-white text-primary hover:bg-white/90 glow-effect">
-                <Wand2 className="w-5 h-5 mr-2" />
-                Start Free Trial
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="text-lg px-8 py-4 border-white/30 text-white hover:bg-white/10 bg-transparent"
-              >
-                <BookOpen className="w-5 h-5 mr-2" />
-                Schedule Demo
-              </Button>
+              <Link href="/chat">
+                <Button size="lg" className="text-lg px-8 py-4 bg-white text-primary hover:bg-white/90 glow-effect">
+                  <Wand2 className="w-5 h-5 mr-2" />
+                  Start Free Trial
+                </Button>
+              </Link>
+              <Link href="/chat">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="text-lg px-8 py-4 border-white/30 text-white hover:bg-white/10 bg-transparent"
+                >
+                  <BookOpen className="w-5 h-5 mr-2" />
+                  Schedule Demo
+                </Button>
+              </Link>
             </div>
           </div>
         </div>

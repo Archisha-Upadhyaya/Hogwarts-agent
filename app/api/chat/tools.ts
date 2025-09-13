@@ -1,137 +1,218 @@
-import { tool } from 'ai';
+import { experimental_generateImage as generateImage, tool } from 'ai';
+import { createFal } from '@ai-sdk/fal'
+import { tavily } from '@tavily/core'
 import { z } from 'zod';
+import { TavilyExtractResponse,TavilySearchResponse } from '@/lib/tools/tavily';
 
-// Tool execution functions
-async function executeGoogleSearch(query: string) {
-  // In a real implementation, you'd use Google Custom Search API
-  // For now, return a formatted search URL and explanation
-  const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-  return {
-    searchUrl,
-    message: `I've prepared a Google search for "${query}". While I cannot directly browse the internet, I can guide you to search for this information at: ${searchUrl}`
-  };
+const fal_apiKey = process.env.FAL_API_KEY
+if (!fal_apiKey) {
+    throw new Error('FAL_API_KEY is not set in environment variables')
 }
+const fal = createFal({
+    apiKey: fal_apiKey,
+})
 
-async function executeYouTubeSearch(query: string) {
-  // In a real implementation, you'd use YouTube Data API
-  const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
-  return {
-    searchUrl,
-    message: `I've prepared a YouTube search for "${query}". You can find relevant videos at: ${searchUrl}`
-  };
+const tavily_apiKey = process.env.TAVILY_API_KEY
+if (!tavily_apiKey) {
+    throw new Error('TAVILY_API_KEY is not set in environment variables')
 }
-
-async function executeScholarSearch(query: string) {
-  const searchUrl = `https://scholar.google.com/scholar?q=${encodeURIComponent(query)}`;
-  return {
-    searchUrl,
-    message: `I've prepared a Google Scholar search for "${query}". You can find academic papers and research at: ${searchUrl}`
-  };
-}
+const tavily_client = tavily({
+    apiKey: tavily_apiKey,
+})
 
 export const tools = {
-  // Navigation tool for general application pages
-  navigate_to_page: tool({
-    description: "Navigate the user to a specific application page. Use this tool when the user explicitly requests to go to a particular page or section of the app. Do NOT use for study-specific pages, quizzes, or flashcards - use dedicated tools for those.",
-    inputSchema: z.object({
-      page_name: z.string().describe("The target page to navigate to. Must be one of the allowed pages."),
-    })
-  }),
-
-  // Educational video search and recommendations
-  search_educational_videos: tool({
-    description: "Search for and recommend relevant educational YouTube videos on a specific topic. Use this when the user asks for video explanations, tutorials, or visual learning resources. The tool will find high-quality educational content.",
-    inputSchema: z.object({
-      topic: z.string().min(2).describe("The specific topic, concept, or subject to search videos for (e.g., 'quadratic equations', 'photosynthesis', 'object-oriented programming'). Be specific for better results."),
+    // Navigation tool for general application pages
+    navigate_to_page: tool({
+        description: "Navigate the user to a specific url, should full https:// url",
+        inputSchema: z.object({
+            url: z.string().describe("The target url to navigate to."),
+        })
     }),
-    execute: async ({ topic }) => {
-      try {
-          const searchQuery = encodeURIComponent(topic);
-          const url = `https://www.youtube.com/results?search_query=${searchQuery}`;
-        
-          const res = await fetch(url, {
-            headers: {
-              'User-Agent':
-                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 ' +
-                '(KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-            },
-          });
-        
-          if (!res.ok) {
-            throw new Error('Failed to fetch YouTube results');
-          }
-        
-          const html = await res.text();
-        
-          const ytInitialDataMatch = html.match(/var ytInitialData = (.*?);\s*<\/script>/);
-          if (!ytInitialDataMatch) {
-            throw new Error('Failed to parse YouTube page');
-          }
-        
-          const ytInitialData = JSON.parse(ytInitialDataMatch[1]);
-        
-          const contents =
-            ytInitialData.contents?.twoColumnSearchResultsRenderer?.primaryContents
-              ?.sectionListRenderer?.contents || [];
-        
-          const suggestions: any[] = [];
-        
-          for (const section of contents) {
-            const items = section.itemSectionRenderer?.contents || [];
-        
-            for (const item of items) {
-              const video = item.videoRenderer;
-              if (
-                video?.videoId &&
-                video.title?.runs?.[0]?.text &&
-                video.ownerText?.runs?.[0]?.text
-              ) {
-                suggestions.push({
-                  videoId: video.videoId,
-                  title: video.title.runs[0].text,
-                  channel: video.ownerText.runs[0].text,
-                  duration: video.lengthText?.simpleText ?? 'Live/Unknown',
-                  url: `https://www.youtube.com/watch?v=${video.videoId}`,
+
+    youtubeSearch: tool({
+        description: 'Search YouTube for videos on any topic',
+        inputSchema: z.object({
+            query: z.string().describe('The search query to find videos on YouTube'),
+        }),
+        execute: async ({ query }) => {
+            try {
+                const searchQuery = encodeURIComponent(query);
+                const url = `https://www.youtube.com/results?search_query=${searchQuery}`;
+
+                const res = await fetch(url, {
+                    headers: {
+                        'User-Agent':
+                            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 ' +
+                            '(KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                    },
                 });
-              }
+
+                if (!res.ok) {
+                    throw new Error('Failed to fetch YouTube results');
+                }
+
+                const html = await res.text();
+
+                const ytInitialDataMatch = html.match(/var ytInitialData = (.*?);\s*<\/script>/);
+                if (!ytInitialDataMatch) {
+                    throw new Error('Failed to parse YouTube page');
+                }
+
+                const ytInitialData = JSON.parse(ytInitialDataMatch[1]);
+
+                const contents =
+                    ytInitialData.contents?.twoColumnSearchResultsRenderer?.primaryContents
+                        ?.sectionListRenderer?.contents || [];
+
+                const suggestions: any[] = [];
+
+                for (const section of contents) {
+                    const items = section.itemSectionRenderer?.contents || [];
+
+                    for (const item of items) {
+                        const video = item.videoRenderer;
+                        if (
+                            video?.videoId &&
+                            video.title?.runs?.[0]?.text &&
+                            video.ownerText?.runs?.[0]?.text
+                        ) {
+                            suggestions.push({
+                                videoId: video.videoId,
+                                title: video.title.runs[0].text,
+                                channel: video.ownerText.runs[0].text,
+                                duration: video.lengthText?.simpleText ?? 'Live/Unknown',
+                                url: `https://www.youtube.com/watch?v=${video.videoId}`,
+                            });
+                        }
+                    }
+                }
+
+                return { videoSuggestions: suggestions.slice(0, 5) };
+            } catch (error) {
+                console.error('Error fetching video suggestions:', error);
+                return { error: 'An internal error occurred while fetching videos.' };
             }
-          }
-        
-        return { videoSuggestions: suggestions.slice(0, 5) };
-      } catch (error) {
-        console.error('Error fetching video suggestions:', error);
-        return { error: 'An internal error occurred while fetching videos.' };
-      }
-    },
-  }),
-
-  googleSearch: tool({
-    description: 'Search Google for information on any topic',
-    inputSchema: z.object({
-      query: z.string().describe('The search query to look up on Google'),
+        },
     }),
-    execute: async ({ query }) => {
-      return await executeGoogleSearch(query);
-    }
-  }),
 
-  youtubeSearch: tool({
-    description: 'Search YouTube for videos on any topic',
-    inputSchema: z.object({
-      query: z.string().describe('The search query to find videos on YouTube'),
+    createImage: tool({
+        description: 'Create an image based on the prompt',
+        inputSchema: z.object({
+            prompt: z.string().describe('The prompt to create an image based on'),
+        }),
+        execute: async ({ prompt }: { prompt: any }) => {
+            return await generateImage({
+                model: fal.image("fal-ai/flux/schnell"),
+                prompt,
+            })
+        },
     }),
-    execute: async ({ query }) => {
-      return await executeYouTubeSearch(query);
-    }
-  }),
 
-  scholarSearch: tool({
-    description: 'Search Google Scholar for academic papers and research',
-    inputSchema: z.object({
-      query: z.string().describe('The academic search query for scholarly articles'),
+    search: tool({
+        description:
+            'Perform a comprehensive web search and get detailed results including optional images and AI-generated answers',
+        inputSchema: z.object({
+            query: z
+                .string()
+                .describe('The search query to find information about'),
+            searchDepth: z
+                .enum(['basic', 'advanced'])
+                .optional()
+                .describe(
+                    'Depth of search - basic is faster, advanced is more thorough'
+                ),
+            topic: z
+                .enum(['general', 'news'])
+                .optional()
+                .describe(
+                    'Category of search - general for broad searches, news for recent events'
+                ),
+            days: z
+                .number()
+                .optional()
+                .describe(
+                    'Number of days back to search (only works with news topic, defaults to 3)'
+                ),
+            timeRange: z
+                .enum(['day', 'week', 'month', 'year', 'd', 'w', 'm', 'y'])
+                .optional()
+                .describe('Time range for results - alternative to days parameter'),
+            maxResults: z
+                .number()
+                .optional()
+                .describe('Maximum number of results to return (default: 5)'),
+            includeImages: z
+                .boolean()
+                .optional()
+                .describe('Include related images in the response'),
+            includeImageDescriptions: z
+                .boolean()
+                .optional()
+                .describe(
+                    'Add descriptive text for each image (requires includeImages)'
+                ),
+            includeAnswer: z
+                .boolean()
+                .optional()
+                .describe(
+                    'Include AI-generated answer to query - basic is quick, advanced is detailed'
+                ),
+            includeRawContent: z
+                .union([z.literal("false"), z.literal("markdown"), z.literal("text")])
+                .optional()
+                .describe('Include raw content in the specified format: "false" to exclude, "markdown" or "text" for content format'),
+            includeDomains: z
+                .array(z.string())
+                .optional()
+                .describe('List of domains to specifically include in results'),
+            excludeDomains: z
+                .array(z.string())
+                .optional()
+                .describe('List of domains to exclude from results'),
+        }),
+        execute: async ({ query, ...options }) => {
+            try {
+                // The tool schema uses string values for serialization ("false"),
+                // but the tavily client expects a boolean false. Convert here.
+                const normalizedOptions = {
+                    ...options,
+                    includeRawContent:
+                        (options as any).includeRawContent === "false"
+                            ? false
+                            : (options as any).includeRawContent,
+                }
+
+                return await tavily_client.search(query, normalizedOptions)
+            } catch (error) {
+                return { error: String(error) } as TavilySearchResponse
+            }
+        },
     }),
-    execute: async ({ query }) => {
-      return await executeScholarSearch(query);
-    }
-  }),
+
+    extract_url: tool({
+        description: 'Extract content and optionally images from a list of URLs',
+        inputSchema: z.object({
+            urls: z
+                .array(z.string().url())
+                .max(20)
+                .describe('List of URLs to extract content from (maximum 20 URLs)'),
+        }),
+        execute: async ({ urls }) => {
+            try {
+                const response = await tavily_client.extract(urls)
+                return {
+                    results: response.results.map((result) => ({
+                        url: result.url,
+                        rawContent: result.rawContent,
+                    })),
+                } as TavilyExtractResponse
+            } catch (error) {
+                return {
+                    results: [],
+                    error: String(error),
+                } as TavilyExtractResponse
+            }
+        },
+    }),
+
 }

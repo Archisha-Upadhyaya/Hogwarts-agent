@@ -19,7 +19,7 @@ const sourceSans = Source_Sans_3({
 
 export const metadata: Metadata = {
   title: "Hogwarts AI - Converse with Magical Professors",
-  description: "Experience the magic of learning with Hogwarts professors through advanced AI technology",
+  description: "Experience the magic of chatting with Hogwarts professors through advanced AI technology",
   generator: "v0.app",
 }
 

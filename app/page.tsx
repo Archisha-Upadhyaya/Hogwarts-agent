@@ -16,13 +16,13 @@ export default function HogwartsAILanding() {
                 <div className="absolute -top-1 -right-1 w-3 h-3 bg-accent rounded-full sparkle-animation" />
               </div>
               <div>
-                <h1 className="font-serif text-2xl font-bold text-foreground">Hogwarts AI</h1>
-                <p className="text-sm text-muted-foreground">Magical Learning Experience</p>
+                <h1 className="font-serif text-2xl font-bold text-foreground">Arcanum Research</h1>
+                <p className="text-sm text-muted-foreground">Magical Research & Image Generation</p>
               </div>
             </div>
             <nav className="hidden md:flex items-center gap-6">
               <a href="#professors" className="text-foreground hover:text-accent transition-colors">
-                Professors
+                Research Agents
               </a>
               <a href="#features" className="text-foreground hover:text-accent transition-colors">
                 Features
@@ -34,7 +34,7 @@ export default function HogwartsAILanding() {
                 Pricing
               </a>
             </nav>
-            <Button className="glow-effect">Start Learning</Button>
+            <Button className="glow-effect">Start Researching</Button>
           </div>
         </div>
       </header>
@@ -45,20 +45,19 @@ export default function HogwartsAILanding() {
           <div className="max-w-4xl mx-auto">
             <Badge className="mb-6 bg-accent text-accent-foreground">
               <Sparkles className="w-4 h-4 mr-2" />
-              Advanced Agentic AI Research
+              Advanced AI Research & Image Generation
             </Badge>
             <h1 className="font-serif text-5xl md:text-7xl font-bold text-white mb-6 text-balance">
-              Converse with the Greatest
-              <span className="text-accent block">Hogwarts Professors</span>
+              Research with the Greatest
+              <span className="text-accent block">Arcane Minds</span>
             </h1>
             <p className="text-xl md:text-2xl text-white/90 mb-8 text-pretty max-w-3xl mx-auto leading-relaxed">
-              Experience magical learning through our revolutionary AI that brings the wisdom of Dumbledore, Snape,
-              McGonagall, and other legendary professors to life.
+              Experience magical research through our revolutionary AI agents that provide intelligent feedback and generate stunning images to enhance your discoveries.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" className="text-lg px-8 py-4 glow-effect">
                 <Wand2 className="w-5 h-5 mr-2" />
-                Begin Your Magical Journey
+                Begin Your Research Journey
               </Button>
               <Button
                 variant="outline"
@@ -66,7 +65,7 @@ export default function HogwartsAILanding() {
                 className="text-lg px-8 py-4 bg-white/10 border-white/20 text-white hover:bg-white/20"
               >
                 <BookOpen className="w-5 h-5 mr-2" />
-                Explore Subjects
+                Explore Research Areas
               </Button>
             </div>
           </div>
@@ -89,11 +88,10 @@ export default function HogwartsAILanding() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-4">
-              Meet Your Magical Mentors
+              Meet Your Research Agents
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto text-pretty">
-              Each professor has been carefully crafted with their unique personality, teaching style, and vast
-              knowledge
+              Each AI agent has been crafted with unique research expertise, providing intelligent feedback and visual insights
             </p>
           </div>
 
@@ -101,49 +99,49 @@ export default function HogwartsAILanding() {
             {[
               {
                 name: "Albus Dumbledore",
-                subject: "Wisdom & Leadership",
+                subject: "Strategic Research & Analysis",
                 description:
-                  "The greatest wizard of all time shares profound insights on life, magic, and the power of choice.",
+                  "Advanced research methodology with deep analytical insights and strategic guidance for complex investigations.",
                 icon: Crown,
-                specialty: "Philosophy & Strategy",
+                specialty: "Strategic Intelligence",
               },
               {
                 name: "Severus Snape",
-                subject: "Potions & Dark Arts",
+                subject: "Critical Analysis & Synthesis",
                 description:
-                  "Master the complex art of potion-making and understand the delicate balance of magical forces.",
+                  "Rigorous fact-checking, critical evaluation, and synthesis of complex research materials with detailed feedback.",
                 icon: Flame,
-                specialty: "Advanced Magic Theory",
+                specialty: "Critical Research Methods",
               },
               {
                 name: "Minerva McGonagall",
-                subject: "Transfiguration",
+                subject: "Structured Research & Documentation",
                 description:
-                  "Learn the precise art of transformation magic with the most skilled transfiguration expert.",
+                  "Systematic research organization, precise documentation, and clear presentation of findings and conclusions.",
                 icon: Wand2,
-                specialty: "Precision & Discipline",
+                specialty: "Research Methodology",
               },
               {
                 name: "Remus Lupin",
-                subject: "Defense Against Dark Arts",
-                description: "Practical defense techniques and understanding the nature of dark creatures and magic.",
+                subject: "Collaborative Research & Peer Review",
+                description: "Supportive research guidance, peer review processes, and collaborative investigation techniques.",
                 icon: Star,
-                specialty: "Practical Application",
+                specialty: "Research Collaboration",
               },
               {
                 name: "Pomona Sprout",
-                subject: "Herbology",
+                subject: "Data Collection & Visualization",
                 description:
-                  "Discover the magical properties of plants and their applications in potion-making and healing.",
+                  "Comprehensive data gathering, visual representation of findings, and image generation for research insights.",
                 icon: Sparkles,
-                specialty: "Natural Magic",
+                specialty: "Data Visualization",
               },
               {
                 name: "Filius Flitwick",
-                subject: "Charms",
-                description: "Master the art of charms and enchantments that make everyday magic possible.",
+                subject: "Technical Research & Innovation",
+                description: "Advanced technical research methods, innovative approaches, and cutting-edge analysis techniques.",
                 icon: BookOpen,
-                specialty: "Practical Charms",
+                specialty: "Research Innovation",
               },
             ].map((professor, index) => (
               <Card
@@ -164,7 +162,7 @@ export default function HogwartsAILanding() {
                   </Badge>
                   <Button className="w-full group-hover:glow-effect">
                     <Users className="w-4 h-4 mr-2" />
-                    Start Conversation
+                    Start Research Session
                   </Button>
                 </CardContent>
               </Card>
@@ -178,10 +176,10 @@ export default function HogwartsAILanding() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-4">
-              Magical Learning Features
+              Advanced Research Features
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto text-pretty">
-              Experience the most advanced AI-powered educational platform designed for magical learning
+              Experience the most advanced AI-powered research platform with intelligent feedback and image generation
             </p>
           </div>
 
@@ -189,23 +187,23 @@ export default function HogwartsAILanding() {
             {[
               {
                 icon: Wand2,
-                title: "Personalized Teaching",
-                description: "Each professor adapts their teaching style to your learning preferences and pace",
+                title: "Intelligent Feedback",
+                description: "Each research agent provides personalized, constructive feedback to guide your investigation process",
               },
               {
                 icon: BookOpen,
-                title: "Comprehensive Curriculum",
-                description: "Access to all Hogwarts subjects with detailed explanations and practical applications",
+                title: "Comprehensive Analysis",
+                description: "Access deep research capabilities with detailed analysis and evidence-based conclusions",
               },
               {
                 icon: Sparkles,
-                title: "Interactive Spells",
-                description: "Practice magic through interactive simulations and guided spell-casting sessions",
+                title: "AI Image Generation",
+                description: "Generate custom images and visualizations to illustrate your research findings and concepts",
               },
               {
                 icon: Users,
-                title: "Study Groups",
-                description: "Join other students in magical study sessions and collaborative learning experiences",
+                title: "Collaborative Research",
+                description: "Work alongside AI agents in collaborative research sessions with real-time feedback and guidance",
               },
             ].map((feature, index) => (
               <Card key={index} className="text-center group hover:shadow-lg transition-all duration-300">
@@ -228,9 +226,9 @@ export default function HogwartsAILanding() {
       <section id="testimonials" className="py-20 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-4">Student Testimonials</h2>
+            <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-4">Researcher Testimonials</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto text-pretty">
-              Hear from students who have transformed their magical education through our AI professors
+              Hear from researchers who have enhanced their investigations through our AI agents and feedback system
             </p>
           </div>
 
@@ -240,22 +238,22 @@ export default function HogwartsAILanding() {
                 name: "Emma Granger",
                 house: "Gryffindor",
                 quote:
-                  "Professor Snape's AI helped me master advanced potion-making techniques I never thought possible. The personalized feedback is incredible!",
-                subject: "Potions",
+                  "The AI feedback system helped me identify gaps in my research methodology I never would have caught. The generated visualizations made my findings crystal clear!",
+                subject: "Research Methods",
               },
               {
                 name: "Neville Longbottom",
                 house: "Gryffindor",
                 quote:
-                  "Professor Sprout's guidance in Herbology has been transformative. I finally understand the magical properties of every plant in the greenhouse.",
-                subject: "Herbology",
+                  "The collaborative research sessions with Sprout's agent transformed my data analysis. The image generation feature brought my botanical research to life.",
+                subject: "Data Analysis",
               },
               {
                 name: "Luna Lovegood",
                 house: "Ravenclaw",
                 quote:
-                  "Dumbledore's wisdom sessions have given me perspectives on magic and life that I carry with me every day. Truly enlightening!",
-                subject: "Philosophy",
+                  "Dumbledore's strategic research guidance opened new perspectives in my investigations. The intelligent feedback loops revolutionized my approach to complex problems.",
+                subject: "Strategic Research",
               },
             ].map((testimonial, index) => (
               <Card key={index} className="bg-card">
@@ -290,47 +288,47 @@ export default function HogwartsAILanding() {
       <section id="pricing" className="py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-4">Choose Your Magical Plan</h2>
+            <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-4">Choose Your Research Plan</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto text-pretty">
-              Select the perfect plan for your magical education journey
+              Select the perfect plan for your research and investigation needs
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {[
               {
-                name: "First Year",
+                name: "Research Novice",
                 price: "$29",
                 period: "/month",
-                description: "Perfect for beginning your magical education",
-                features: ["Access to 3 professors", "Basic spell tutorials", "Study group access", "Email support"],
+                description: "Perfect for beginning your research journey",
+                features: ["Access to 3 research agents", "Basic feedback system", "Limited image generation", "Email support"],
                 popular: false,
               },
               {
-                name: "Advanced Student",
+                name: "Advanced Researcher",
                 price: "$59",
                 period: "/month",
-                description: "For serious magical practitioners",
+                description: "For serious research professionals",
                 features: [
-                  "Access to all professors",
-                  "Advanced spell simulations",
-                  "Personalized learning paths",
+                  "Access to all research agents",
+                  "Advanced feedback algorithms",
+                  "Unlimited image generation",
                   "Priority support",
-                  "Exclusive masterclasses",
+                  "Collaborative research sessions",
                 ],
                 popular: true,
               },
               {
-                name: "Master Wizard",
+                name: "Research Master",
                 price: "$99",
                 period: "/month",
-                description: "Ultimate magical education experience",
+                description: "Ultimate research intelligence experience",
                 features: [
                   "Everything in Advanced",
-                  "One-on-one professor sessions",
-                  "Custom spell creation",
-                  "Research collaboration",
-                  "Lifetime access to materials",
+                  "One-on-one agent consultations",
+                  "Custom research methodologies",
+                  "Advanced analytics dashboard",
+                  "Lifetime access to research library",
                 ],
                 popular: false,
               },
@@ -376,11 +374,10 @@ export default function HogwartsAILanding() {
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto">
             <h2 className="font-serif text-4xl md:text-5xl font-bold mb-6 text-balance">
-              Your Magical Education Awaits
+              Your Research Journey Awaits
             </h2>
             <p className="text-xl mb-8 text-white/90 text-pretty leading-relaxed">
-              Join thousands of students who have discovered the magic of learning with Hogwarts' greatest professors.
-              Begin your journey into the world of advanced magical education today.
+              Join thousands of researchers who have enhanced their investigations with intelligent AI agents, advanced feedback systems, and powerful image generation capabilities.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" className="text-lg px-8 py-4 bg-white text-primary hover:bg-white/90 glow-effect">
@@ -407,34 +404,34 @@ export default function HogwartsAILanding() {
             <div>
               <div className="flex items-center gap-3 mb-4">
                 <Wand2 className="h-6 w-6 text-accent" />
-                <span className="font-serif text-xl font-bold">Hogwarts AI</span>
+                <span className="font-serif text-xl font-bold">Arcanum Research</span>
               </div>
               <p className="text-primary-foreground/80 text-pretty">
-                Bringing the magic of Hogwarts education to the digital age through advanced AI technology.
+                Bringing advanced research capabilities to the digital age through intelligent AI agents and feedback systems.
               </p>
             </div>
 
             <div>
-              <h3 className="font-serif text-lg font-semibold mb-4">Subjects</h3>
+              <h3 className="font-serif text-lg font-semibold mb-4">Research Areas</h3>
               <ul className="space-y-2 text-primary-foreground/80">
                 <li>
                   <a href="#" className="hover:text-accent transition-colors">
-                    Potions
+                    Strategic Analysis
                   </a>
                 </li>
                 <li>
                   <a href="#" className="hover:text-accent transition-colors">
-                    Transfiguration
+                    Data Visualization
                   </a>
                 </li>
                 <li>
                   <a href="#" className="hover:text-accent transition-colors">
-                    Defense Against Dark Arts
+                    Critical Research Methods
                   </a>
                 </li>
                 <li>
                   <a href="#" className="hover:text-accent transition-colors">
-                    Herbology
+                    Image Generation
                   </a>
                 </li>
               </ul>
@@ -445,17 +442,17 @@ export default function HogwartsAILanding() {
               <ul className="space-y-2 text-primary-foreground/80">
                 <li>
                   <a href="#" className="hover:text-accent transition-colors">
-                    Spell Library
+                    Research Library
                   </a>
                 </li>
                 <li>
                   <a href="#" className="hover:text-accent transition-colors">
-                    Study Guides
+                    Methodology Guides
                   </a>
                 </li>
                 <li>
                   <a href="#" className="hover:text-accent transition-colors">
-                    Practice Tests
+                    Feedback Templates
                   </a>
                 </li>
                 <li>
@@ -494,7 +491,7 @@ export default function HogwartsAILanding() {
           </div>
 
           <div className="border-t border-primary-foreground/20 mt-12 pt-8 text-center">
-            <p className="text-primary-foreground/60">© 2024 Hogwarts AI. All rights reserved. Magic responsibly.</p>
+            <p className="text-primary-foreground/60">© 2024 Arcanum Research. All rights reserved. Research responsibly.</p>
           </div>
         </div>
       </footer>

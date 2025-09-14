@@ -89,6 +89,7 @@ export default function HogwartsChat() {
   const [input, setInput] = useState('');
   const [messageToolCalls, setMessageToolCalls] = useState<Record<string, ToolCall[]>>({});
   const [currentRequestToolCalls, setCurrentRequestToolCalls] = useState<ToolCall[]>([]);
+  const [isThinking, setIsThinking] = useState(false);
 
   // Set initial professor from URL parameter
   useEffect(() => {
@@ -102,6 +103,12 @@ export default function HogwartsChat() {
     transport: new DefaultChatTransport({
       api: '/api/chat',
     }),
+    onFinish() {
+      setIsThinking(false);
+    },
+    onError() {
+      setIsThinking(false);
+    },
     async onToolCall({ toolCall }) {
       const toolPurpose = TOOL_PURPOSES[toolCall.toolName] || "Executing specialized research tool";
       
@@ -150,6 +157,7 @@ export default function HogwartsChat() {
 
   const currentProfessor = PROFESSORS[selectedProfessor];
   const isLoading = status === 'streaming';
+  const showThinking = isThinking || isLoading;
 
   // Automatically attach tool calls to the latest assistant message when it's complete
   useEffect(() => {
@@ -185,6 +193,9 @@ export default function HogwartsChat() {
     e.preventDefault();
     if (input.trim()) {
       console.log('Sending message with professor:', selectedProfessor);
+      
+      // Show thinking state immediately
+      setIsThinking(true);
       
       // Pass the current professor in the request body (not hook-level)
       sendMessage(
@@ -410,7 +421,7 @@ export default function HogwartsChat() {
                 </div>
               ))}
               
-              {isLoading && (
+              {showThinking && (
                 <div className="flex gap-3 justify-start">
                   <Avatar className="h-8 w-8 mt-1">
                     <AvatarFallback className="text-sm bg-amber-200">
@@ -421,7 +432,7 @@ export default function HogwartsChat() {
                     <div className="flex items-center gap-2">
                       <Sparkles className="h-4 w-4 animate-pulse" />
                       <div className="flex-1">
-                        <div className="text-sm font-medium">{currentProfessor.name} is researching...</div>
+                        <div className="text-sm font-medium">{currentProfessor.name} is thinking...</div>
                         <div className="text-xs text-amber-700 mt-1">Processing your request</div>
                       </div>
                     </div>
@@ -449,11 +460,11 @@ export default function HogwartsChat() {
                 onChange={(e) => setInput(e.target.value)}
                 placeholder={`Ask ${currentProfessor.name} to research anything... Try "Create an image of..." "Analyze this URL..." or "Research..."`}
                 className="flex-1 border-amber-300 focus:border-amber-500 focus:ring-amber-500"
-                disabled={isLoading}
+                disabled={showThinking}
               />
               <Button
                 type="submit"
-                disabled={isLoading || !input.trim()}
+                disabled={showThinking || !input.trim()}
                 className="bg-amber-600 hover:bg-amber-700 text-white px-4"
               >
                 <Send className="h-4 w-4" />

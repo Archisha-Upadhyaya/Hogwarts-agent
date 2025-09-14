@@ -54,6 +54,14 @@ const PROFESSORS: Record<ProfessorKey, Professor> = {
     color: "bg-blue-100 text-blue-800",
     description: "Dreamy and ethereal, sees magic in everything",
   },
+  archivist: {
+  name: "Hogwarts Archivist",
+  title: "Keeper of Records",
+  house: "None",
+  avatar: "📜",
+  color: "bg-gray-100 text-gray-800",
+  description: "Neutral and precise, provides plain and factual answers",
+},
 };
 
 export default function HogwartsChat({ className }: HogwartsChatProps) {

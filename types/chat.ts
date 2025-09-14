@@ -11,7 +11,7 @@ export interface HogwartsChatProps {
   className?: string;
 }
 
-export type ProfessorKey = 'dumbledore' | 'mcgonagall' | 'snape' | 'hagrid' | 'luna';
+export type ProfessorKey = 'dumbledore' | 'mcgonagall' | 'snape' | 'hagrid' | 'luna'| 'archivist';
 
 export interface ToolCall {
   id: string;

@@ -30,7 +30,7 @@ const TOOL_PURPOSES: Record<string, string> = {
 const PROFESSORS: Record<ProfessorKey, Professor> = {
   dumbledore: {
     name: "Albus Dumbledore",
-    title: "Strategic Guide",
+    title: "Strategic Researcher",
     house: "Gryffindor",
     avatar: "🧙‍♂️",
     color: "bg-purple-100 text-purple-800",
@@ -60,7 +60,7 @@ const PROFESSORS: Record<ProfessorKey, Professor> = {
   },
   slughorn: {
     name: "Horace Slughorn",
-    title: "Master Networker",
+    title: "Marketing Master",
     house: "Slytherin",
     avatar: "🍷",
     color: "bg-pink-100 text-pink-800",
@@ -70,7 +70,7 @@ const PROFESSORS: Record<ProfessorKey, Professor> = {
   },
   flitwick: {
     name: "Filius Flitwick",
-    title: "Creative Enchanter",
+    title: "Imaginative Creator",
     house: "Ravenclaw",
     avatar: "✨",
     color: "bg-blue-100 text-blue-800",
@@ -353,7 +353,7 @@ export default function HogwartsChat() {
         
         <CardContent className="p-0">
           {/* Messages */}
-          <ScrollArea ref={scrollAreaRef} className="h-96 p-4">
+          <ScrollArea ref={scrollAreaRef} className="h-96 px-4 pt-4">
             <div className="space-y-4">
               {messages.length === 0 && (
                 <div className="text-center py-8 text-gray-500">

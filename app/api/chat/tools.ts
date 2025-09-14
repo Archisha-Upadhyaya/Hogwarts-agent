@@ -264,4 +264,73 @@ export const tools = {
         },
     }),
 
+    searchQNA: tool({
+      description:
+        'Search the web and get a direct answer to your question, optimized for AI agent interactions',
+      inputSchema: z.object({
+        query: z.string().describe('The question to find an answer for'),
+        searchDepth: z
+          .enum(['basic', 'advanced'])
+          .optional()
+          .describe(
+            'Depth of search - defaults to advanced for better answers'
+          ),
+        topic: z
+          .enum(['general', 'news'])
+          .optional()
+          .describe(
+            'Category of search - general for broad searches, news for recent events'
+          ),
+        days: z
+          .number()
+          .optional()
+          .describe(
+            'Number of days back to search (only works with news topic)'
+          ),
+        maxResults: z
+          .number()
+          .optional()
+          .describe('Maximum number of results to consider'),
+        includeDomains: z
+          .array(z.string())
+          .optional()
+          .describe('List of domains to specifically include in results'),
+        excludeDomains: z
+          .array(z.string())
+          .optional()
+          .describe('List of domains to exclude from results'),
+      }),
+      execute: async ({ query, ...options }) => {
+        try {
+          return await tavily_client.searchQNA(query, options)
+        } catch (error) {
+          return String(error)
+        }
+      },
+    }),
+
+    githubSearch: tool({
+      description: 'Search GitHub for repositories using the GitHub web search page',
+      inputSchema: z.object({
+        query: z.string().describe('The search query for repositories'),
+        per_page: z.number().min(1).max(100).optional().describe('Number of results to return (default 10)'),
+      }),
+      execute: async ({ query, per_page = 10 }) => {
+        try {
+          const url = `https://github.com/search?q=${encodeURIComponent(query)}&type=repositories`;
+          const res = await fetch(url, {
+            headers: { 'User-Agent': 'Hogwarts-Agent/1.0' },
+          });
+          if (!res.ok) {
+            throw new Error(`GitHub search error: ${res.status} ${res.statusText}`);
+          }
+          const html = await res.text();
+          return { html };
+        } catch (error) {
+          console.error('Error searching GitHub:', error);
+          return { error: 'An error occurred while searching GitHub.', details: String(error) };
+        }
+      },
+    }),
+
 }

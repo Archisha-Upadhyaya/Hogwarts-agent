@@ -20,16 +20,10 @@ const TOOL_PURPOSES: Record<string, string> = {
   createImage: "Generating visual content using AI",
   search: "Searching the web for information",
   youtubeSearch: "Finding relevant video content",
+  searchQNA: "Fetching direct answer via AI-optimized web search",
+  githubSearch: "Searching GitHub repositories",
   webSearch: "Conducting comprehensive web research",
   urlContext: "Analyzing webpage content",
-  imageAnalysis: "Analyzing uploaded images",
-  videoGeneration: "Creating video content",
-  dataVisualization: "Creating charts and graphs",
-  documentAnalysis: "Processing and analyzing documents",
-  translation: "Translating text between languages",
-  codeGeneration: "Generating code solutions",
-  textSummary: "Summarizing large text content",
-  sentimentAnalysis: "Analyzing emotional tone of text"
 };
 
 const PROFESSORS: Record<ProfessorKey, Professor> = {
@@ -353,35 +347,18 @@ export default function HogwartsChat() {
                         {part.type === 'tool-result' && (
                           <div className="mt-2 p-2 bg-amber-100 rounded text-xs">
                             <div className="flex items-center gap-2 text-amber-700">
-                              {part.toolName === 'navigate_to_page' && (
-                                <>
-                                  <ExternalLink className="h-3 w-3" />
-                                  <span>Navigation triggered</span>
-                                </>
+                              {part.toolName === 'navigate_to_page' && null}
+                              {part.toolName === 'createImage' && null}
+                              {part.toolName === 'search' && null}
+                              {part.toolName === 'youtubeSearch' && null}
+                              {part.toolName === 'searchQNA' && (
+                                <ExternalLink className="h-4 w-4 text-amber-600" />
                               )}
-                              {part.toolName === 'createImage' && (
-                                <>
-                                  <ImageIcon className="h-3 w-3" />
-                                  <span>Image generated</span>
-                                </>
+                              {part.toolName === 'githubSearch' && (
+                                <ExternalLink className="h-4 w-4 text-amber-600" />
                               )}
-                              {part.toolName === 'search' && (
-                                <>
-                                  <Sparkles className="h-3 w-3" />
-                                  <span>Search completed</span>
-                                </>
-                              )}
-                              {part.toolName === 'youtubeSearch' && (
-                                <>
-                                  <ExternalLink className="h-3 w-3" />
-                                  <span>YouTube search</span>
-                                </>
-                              )}
-                              {!['navigate_to_page', 'createImage', 'search', 'youtubeSearch'].includes(part.toolName) && (
-                                <>
-                                  <Loader2 className="h-3 w-3" />
-                                  <span>{part.toolName}</span>
-                                </>
+                              {!['navigate_to_page', 'createImage', 'search', 'youtubeSearch', 'searchQNA', 'githubSearch'].includes(part.toolName) && (
+                                <Loader2 className="h-3 w-3" />
                               )}
                             </div>
                           </div>

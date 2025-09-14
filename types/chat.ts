@@ -5,13 +5,14 @@ export interface Professor {
   avatar: string;
   color: string;
   description: string;
+  placeholder: string;
 }
 
 export interface HogwartsChatProps {
   className?: string;
 }
 
-export type ProfessorKey = 'dumbledore' | 'mcgonagall' | 'snape' | 'hagrid' | 'luna'| 'archivist';
+export type ProfessorKey = 'dumbledore' | 'mcgonagall' | 'snape' | 'slughorn' | 'flitwick'| 'archivist';
 
 export interface ToolCall {
   id: string;

@@ -104,65 +104,68 @@ export default function HogwartsAILanding() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
-              {
-                name: "Albus Dumbledore",
-                key: "dumbledore",
-                avatar: "🧙‍♂️",
-                subject: "Strategic Research & Wisdom",
-                description:
-                  "Advanced research methodology with deep analytical insights and strategic guidance for complex investigations.",
-                icon: Crown,
-                specialty: "Strategic Intelligence",
-              },
-              {
-                name: "Severus Snape",
-                key: "snape",
-                avatar: "🦇",
-                subject: "Critical Analysis & Precision",
-                description:
-                  "Rigorous fact-checking, critical evaluation, and synthesis of complex research materials with detailed feedback.",
-                icon: Flame,
-                specialty: "Critical Research Methods",
-              },
-              {
-                name: "Minerva McGonagall",
-                key: "mcgonagall",
-                avatar: "👩‍🏫",
-                subject: "Structured Research & Documentation",
-                description:
-                  "Systematic research organization, precise documentation, and clear presentation of findings and conclusions.",
-                icon: Wand2,
-                specialty: "Research Methodology",
-              },
-              {
-                name: "Rubeus Hagrid",
-                key: "hagrid",
-                avatar: "🐻",
-                subject: "Natural Research & Field Studies",
-                description: "Comprehensive field research, natural observation methods, and collaborative investigation techniques.",
-                icon: Star,
-                specialty: "Field Research",
-              },
-              {
-                name: "Luna Lovegood",
-                key: "luna",
-                avatar: "🌙",
-                subject: "Creative Research & Innovation",
-                description:
-                  "Innovative research approaches, creative problem-solving, and unique perspectives on complex investigations.",
-                icon: Sparkles,
-                specialty: "Creative Research",
-              },
-              {
-                name: "Hogwarts Archivist",
-                key: "archivist",
-                avatar: "📜",
-                subject: "Data Archives & Documentation",
-                description: "Comprehensive data archival, systematic documentation, and precise record-keeping for research integrity.",
-                icon: BookOpen,
-                specialty: "Research Archives",
-              },
-            ].map((professor, index) => (
+  {
+    name: "Albus Dumbledore",
+    key: "dumbledore",
+    avatar: "🧙‍♂️",
+    subject: "Strategic Research & Wisdom",
+    description:
+      "Big-picture analysis, interdisciplinary synthesis, and profound guidance for complex challenges.",
+    icon: Crown,
+    specialty: "Strategic Intelligence",
+  },
+  {
+    name: "Severus Snape",
+    key: "snape",
+    avatar: "🦇",
+    subject: "Technical Precision & Critical Review",
+    description:
+      "Exacting technical analysis, code and document review, and deep troubleshooting with sharp insights.",
+    icon: Flame,
+    specialty: "Technical Analysis",
+  },
+  {
+    name: "Minerva McGonagall",
+    key: "mcgonagall",
+    avatar: "👩‍🏫",
+    subject: "Structured Teaching & Documentation",
+    description:
+      "Clear, disciplined instruction with a focus on academic writing, organization, and structured research.",
+    icon: Wand2,
+    specialty: "Research Methodology",
+  },
+  {
+    name: "Horace Slughorn",
+    key: "slughorn",
+    avatar: "🍷",
+    subject: "Networking & Influence",
+    description:
+      "Persuasive communication, outreach strategies, and resourceful connections to expand opportunities.",
+    icon: Users,
+    specialty: "Influence & Outreach",
+  },
+  {
+    name: "Filius Flitwick",
+    key: "flitwick",
+    avatar: "✨",
+    subject: "Creative Enchantment & Innovation",
+    description:
+      "Energetic creation of content, visuals, and workflows, bringing ideas to life with technical creativity.",
+    icon: Sparkles,
+    specialty: "Creative Generation",
+  },
+  {
+    name: "Hogwarts Archivist",
+    key: "archivist",
+    avatar: "📜",
+    subject: "Archival Research & Records",
+    description:
+      "Plain, factual record-keeping, systematic documentation, and precise reference for integrity.",
+    icon: BookOpen,
+    specialty: "Research Archives",
+  },
+]
+.map((professor, index) => (
               <Card
                 key={index}
                 className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-2 bg-card border-border"

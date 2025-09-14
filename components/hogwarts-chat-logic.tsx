@@ -29,52 +29,64 @@ const TOOL_PURPOSES: Record<string, string> = {
 const PROFESSORS: Record<ProfessorKey, Professor> = {
   dumbledore: {
     name: "Albus Dumbledore",
-    title: "Headmaster",
+    title: "Strategic Guide",
     house: "Gryffindor",
     avatar: "🧙‍♂️",
     color: "bg-purple-100 text-purple-800",
-    description: "Wise and whimsical, with a love for sherbet lemons",
+    description:
+      "Calm and insightful, skilled in big-picture research, synthesis, and interdisciplinary strategy.",
+    placeholder: "Ask for strategic research or interdisciplinary analysis...",
   },
   mcgonagall: {
     name: "Minerva McGonagall",
-    title: "Deputy Headmistress",
+    title: "Academic Mentor",
     house: "Gryffindor",
     avatar: "👩‍🏫",
     color: "bg-red-100 text-red-800",
-    description: "Stern but fair, with no tolerance for foolishness",
+    description:
+      "Stern and precise, excels in teaching, structured writing, and clear academic analysis.",
+    placeholder: "Ask for help with teaching, writing, or structured analysis...",
   },
   snape: {
     name: "Severus Snape",
-    title: "Potions Master",
+    title: "Technical Analyst",
     house: "Slytherin",
     avatar: "🦇",
     color: "bg-green-100 text-green-800",
-    description: "Mysterious and sarcastic, master of the dark arts",
+    description:
+      "Controlled and exacting, specializes in technical analysis, code review, and sharp troubleshooting.",
+    placeholder: "Ask for technical analysis or code review...",
   },
-  hagrid: {
-    name: "Rubeus Hagrid",
-    title: "Keeper of Keys and Grounds",
-    house: "Gryffindor",
-    avatar: "🐻",
-    color: "bg-yellow-100 text-yellow-800",
-    description: "Warm-hearted lover of magical creatures",
+  slughorn: {
+    name: "Horace Slughorn",
+    title: "Master Networker",
+    house: "Slytherin",
+    avatar: "🍷",
+    color: "bg-pink-100 text-pink-800",
+    description:
+      "Warm and persuasive, adept at marketing, outreach, and connecting people with opportunities.",
+    placeholder: "Ask for marketing ideas or outreach strategies...",
   },
-  luna: {
-    name: "Luna Lovegood",
-    title: "Magical Wisdom Keeper",
+  flitwick: {
+    name: "Filius Flitwick",
+    title: "Creative Enchanter",
     house: "Ravenclaw",
-    avatar: "🌙",
+    avatar: "✨",
     color: "bg-blue-100 text-blue-800",
-    description: "Dreamy and ethereal, sees magic in everything",
+    description:
+      "Energetic and inventive, skilled in creative content, visuals, data, and automation workflows.",
+    placeholder: "Ask for creative content, visuals, or automation...",
   },
   archivist: {
-  name: "Hogwarts Archivist",
-  title: "Keeper of Records",
-  house: "None",
-  avatar: "📜",
-  color: "bg-gray-100 text-gray-800",
-  description: "Neutral and precise, provides plain and factual answers",
-},
+    name: "Hogwarts Archivist",
+    title: "Keeper of Records",
+    house: "None",
+    avatar: "📜",
+    color: "bg-gray-100 text-gray-800",
+    description:
+      "Neutral and factual, provides plain, precise answers without flourish.",
+    placeholder: "Ask for a direct, factual answer...",
+  },
 };
 
 export default function HogwartsChat() {

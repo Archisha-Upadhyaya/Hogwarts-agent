@@ -2,7 +2,7 @@
 
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -90,6 +90,8 @@ export default function HogwartsChat() {
   const [messageToolCalls, setMessageToolCalls] = useState<Record<string, ToolCall[]>>({});
   const [currentRequestToolCalls, setCurrentRequestToolCalls] = useState<ToolCall[]>([]);
   const [isThinking, setIsThinking] = useState(false);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Set initial professor from URL parameter
   useEffect(() => {
@@ -166,6 +168,13 @@ export default function HogwartsChat() {
   const currentProfessor = PROFESSORS[selectedProfessor];
   const isLoading = status === 'streaming';
   const showThinking = isThinking || isLoading;
+
+  // Auto-scroll to bottom when messages change
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, currentRequestToolCalls, isLoading]);
 
   // Automatically attach tool calls to the latest assistant message when it's complete
   useEffect(() => {
@@ -281,7 +290,7 @@ export default function HogwartsChat() {
         
         <CardContent className="p-0">
           {/* Messages */}
-          <ScrollArea className="h-96 p-4">
+          <ScrollArea ref={scrollAreaRef} className="h-96 p-4">
             <div className="space-y-4">
               {messages.length === 0 && (
                 <div className="text-center py-8 text-gray-500">
@@ -456,6 +465,9 @@ export default function HogwartsChat() {
                   <p className="text-sm">{error.message}</p>
                 </div>
               )}
+              
+              {/* Invisible element for auto-scrolling */}
+              <div ref={messagesEndRef} />
             </div>
           </ScrollArea>
 

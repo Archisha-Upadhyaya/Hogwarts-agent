@@ -18,6 +18,7 @@ import { ToolCallDisplay } from './tool-call-display';
 const TOOL_PURPOSES: Record<string, string> = {
   navigate_to_page: "Opening external webpage for research",
   createImage: "Generating visual content using AI",
+  createVideo: "Creating video content using AI",
   search: "Searching the web for information",
   youtubeSearch: "Finding relevant video content",
   searchQNA: "Fetching direct answer via AI-optimized web search",

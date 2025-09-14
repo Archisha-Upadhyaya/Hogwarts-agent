@@ -1,16 +1,8 @@
-import { experimental_generateImage as generateImage, tool } from 'ai';
-import { createFal } from '@ai-sdk/fal'
+import { tool } from 'ai';
 import { tavily } from '@tavily/core'
 import { z } from 'zod';
 import { TavilyExtractResponse,TavilySearchResponse } from '@/lib/tools/tavily';
-
-const fal_apiKey = process.env.FAL_API_KEY
-if (!fal_apiKey) {
-    throw new Error('FAL_API_KEY is not set in environment variables')
-}
-const fal = createFal({
-    apiKey: fal_apiKey,
-})
+import { multimedia_tools } from './mmtool';
 
 const tavily_apiKey = process.env.TAVILY_API_KEY
 if (!tavily_apiKey) {
@@ -20,12 +12,10 @@ const tavily_client = tavily({
     apiKey: tavily_apiKey,
 })
 
-const imgbb_apiKey = process.env.IMGBB_API_KEY
-if (!imgbb_apiKey) {
-    throw new Error('IMGBB_API_KEY is not set in environment variables')
-}
 
+// Merge multimedia tools with the main tools
 export const tools = {
+    ...multimedia_tools,
     // Navigation tool for general application pages
     navigate_to_page: tool({
         description: "Navigate the user to a specific url, should full https:// url",
@@ -100,62 +90,6 @@ export const tools = {
         },
     }),
 
-    createImage: tool({
-        description: 'Create an image based on the prompt',
-        inputSchema: z.object({
-            prompt: z.string().describe('The prompt to create an image based on'),
-        }),
-        execute: async ({ prompt }: { prompt: any }) => {
-            try {
-                // Generate image using FAL
-                const result = await generateImage({
-                    model: fal.image("fal-ai/flux/schnell"),
-                    prompt,
-                });
-                
-                // Upload to ImgBB using direct POST request
-                console.log('Uploading image to ImgBB with prompt:', prompt);
-                
-                const formData = new FormData();
-                formData.append('image', result.image.base64);
-                
-                const uploadResponse = await fetch(`https://api.imgbb.com/1/upload?expiration=600&key=${imgbb_apiKey}`, {
-                    method: 'POST',
-                    body: formData,
-                });
-
-                if (!uploadResponse.ok) {
-                    throw new Error(`ImgBB upload failed: ${uploadResponse.status} ${uploadResponse.statusText}`);
-                }
-
-                const uploadData = await uploadResponse.json();
-                
-                if (!uploadData.success) {
-                    throw new Error(`ImgBB upload failed: ${uploadData.error?.message || 'Unknown error'}`);
-                }
-
-                console.log('Image uploaded successfully:', uploadData.data.url);
-
-                return {
-                    type: 'image',
-                    url: uploadData.data.url,
-                    prompt: prompt,
-                    uploadInfo: {
-                        id: uploadData.data.id,
-                        title: uploadData.data.title,
-                        size: uploadData.data.size
-                    }
-                };
-            } catch (error) {
-                console.error('Error generating or uploading image:', error);
-                return {
-                    type: 'error',
-                    message: 'Failed to generate or upload image',
-                    error: String(error)
-                };
-            }
-        },
-    }),
 
     search: tool({
         description:

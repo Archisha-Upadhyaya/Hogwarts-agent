@@ -15,6 +15,7 @@ import {
   Play
 } from 'lucide-react';
 import { GeneratedImageDisplay } from './generated-image-display';
+import { GeneratedVideoDisplay } from './generated-video-display';
 
 interface ToolCallDisplayProps {
   toolName: string;
@@ -30,6 +31,7 @@ interface ToolCallDisplayProps {
 const TOOL_ICONS: Record<string, React.ElementType> = {
   navigate_to_page: ExternalLink,
   createImage: ImageIcon,
+  createVideo: Play,
   search: Search,
   youtubeSearch: Play,
   webSearch: Globe,
@@ -148,6 +150,12 @@ export function ToolCallDisplay({
               url={result.url}
               prompt={result.prompt || 'Generated image'}
               uploadInfo={result.uploadInfo}
+            />
+          ) : toolName === 'createVideo' && result.type === 'video' && result.url ? (
+            <GeneratedVideoDisplay
+              url={result.url}
+              prompt={result.prompt || 'Generated video'}
+              videoInfo={result.videoInfo}
             />
           ) : null}
         </div>

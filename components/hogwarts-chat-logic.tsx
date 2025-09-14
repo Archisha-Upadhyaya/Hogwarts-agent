@@ -579,6 +579,7 @@ export default function HogwartsChat() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder={currentProfessor.placeholder}
+                  className="flex-1 border-amber-300 focus:border-amber-500 focus:ring-amber-500"
                   disabled={showThinking}
                 />
                 

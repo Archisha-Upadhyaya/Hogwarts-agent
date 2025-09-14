@@ -23,7 +23,7 @@ export default function HogwartsAILanding() {
             </div>
             <nav className="hidden md:flex items-center gap-6">
               <a href="#professors" className="text-foreground hover:text-accent transition-colors">
-                Research Agents
+                Professors
               </a>
               <a href="#features" className="text-foreground hover:text-accent transition-colors">
                 Features
@@ -95,7 +95,7 @@ export default function HogwartsAILanding() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-4">
-              Meet Your Research Agents
+              Meet Your Professors
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto text-pretty">
               Each AI agent has been crafted with unique research expertise, providing intelligent feedback and visual insights
@@ -106,7 +106,9 @@ export default function HogwartsAILanding() {
             {[
               {
                 name: "Albus Dumbledore",
-                subject: "Strategic Research & Analysis",
+                key: "dumbledore",
+                avatar: "🧙‍♂️",
+                subject: "Strategic Research & Wisdom",
                 description:
                   "Advanced research methodology with deep analytical insights and strategic guidance for complex investigations.",
                 icon: Crown,
@@ -114,7 +116,9 @@ export default function HogwartsAILanding() {
               },
               {
                 name: "Severus Snape",
-                subject: "Critical Analysis & Synthesis",
+                key: "snape",
+                avatar: "🦇",
+                subject: "Critical Analysis & Precision",
                 description:
                   "Rigorous fact-checking, critical evaluation, and synthesis of complex research materials with detailed feedback.",
                 icon: Flame,
@@ -122,6 +126,8 @@ export default function HogwartsAILanding() {
               },
               {
                 name: "Minerva McGonagall",
+                key: "mcgonagall",
+                avatar: "👩‍🏫",
                 subject: "Structured Research & Documentation",
                 description:
                   "Systematic research organization, precise documentation, and clear presentation of findings and conclusions.",
@@ -129,26 +135,32 @@ export default function HogwartsAILanding() {
                 specialty: "Research Methodology",
               },
               {
-                name: "Remus Lupin",
-                subject: "Collaborative Research & Peer Review",
-                description: "Supportive research guidance, peer review processes, and collaborative investigation techniques.",
+                name: "Rubeus Hagrid",
+                key: "hagrid",
+                avatar: "🐻",
+                subject: "Natural Research & Field Studies",
+                description: "Comprehensive field research, natural observation methods, and collaborative investigation techniques.",
                 icon: Star,
-                specialty: "Research Collaboration",
+                specialty: "Field Research",
               },
               {
-                name: "Pomona Sprout",
-                subject: "Data Collection & Visualization",
+                name: "Luna Lovegood",
+                key: "luna",
+                avatar: "🌙",
+                subject: "Creative Research & Innovation",
                 description:
-                  "Comprehensive data gathering, visual representation of findings, and image generation for research insights.",
+                  "Innovative research approaches, creative problem-solving, and unique perspectives on complex investigations.",
                 icon: Sparkles,
-                specialty: "Data Visualization",
+                specialty: "Creative Research",
               },
               {
-                name: "Filius Flitwick",
-                subject: "Technical Research & Innovation",
-                description: "Advanced technical research methods, innovative approaches, and cutting-edge analysis techniques.",
+                name: "Hogwarts Archivist",
+                key: "archivist",
+                avatar: "📜",
+                subject: "Data Archives & Documentation",
+                description: "Comprehensive data archival, systematic documentation, and precise record-keeping for research integrity.",
                 icon: BookOpen,
-                specialty: "Research Innovation",
+                specialty: "Research Archives",
               },
             ].map((professor, index) => (
               <Card
@@ -157,17 +169,17 @@ export default function HogwartsAILanding() {
               >
                 <CardHeader className="text-center">
                   <div className="mx-auto mb-4 p-3 bg-accent/10 rounded-full w-fit group-hover:bg-accent/20 transition-colors">
-                    <professor.icon className="w-8 h-8 text-accent" />
+                    <span className="text-3xl">{professor.avatar}</span>
                   </div>
                   <CardTitle className="font-serif text-xl text-card-foreground">{professor.name}</CardTitle>
                   <CardDescription className="text-muted-foreground font-medium">{professor.subject}</CardDescription>
                 </CardHeader>
                 <CardContent className="text-center">
                   <p className="text-card-foreground mb-4 text-pretty">{professor.description}</p>
-                  <Badge variant="secondary" className="mb-4">
+                  <Badge variant="outline" className="mb-4">
                     {professor.specialty}
                   </Badge>
-                  <Link href="/chat">
+                  <Link href={`/chat?professor=${professor.key}`}>
                     <Button className="w-full group-hover:glow-effect">
                       <Users className="w-4 h-4 mr-2" />
                       Start Research Session
@@ -237,7 +249,7 @@ export default function HogwartsAILanding() {
           <div className="text-center mb-16">
             <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-4">Researcher Testimonials</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto text-pretty">
-              Hear from researchers who have enhanced their investigations through our AI agents and feedback system
+              Hear from students who have enhanced their investigations through our AI professors and feedback system
             </p>
           </div>
 

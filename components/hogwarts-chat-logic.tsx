@@ -3,6 +3,7 @@
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
 import { useState, useCallback, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Send, Sparkles, Image as ImageIcon, ExternalLink, Loader2 } from 'lucide-react';
+import { Send, Sparkles, Image as ImageIcon, ExternalLink, Loader2, Wand2 } from 'lucide-react';
 import { Professor, ProfessorKey, HogwartsChatProps, ToolCall } from '@/types/chat';
 import { ToolCallDisplay } from './tool-call-display';
 
@@ -83,10 +84,19 @@ const PROFESSORS: Record<ProfessorKey, Professor> = {
 };
 
 export default function HogwartsChat({ className }: HogwartsChatProps) {
+  const searchParams = useSearchParams();
   const [selectedProfessor, setSelectedProfessor] = useState<ProfessorKey>('dumbledore');
   const [input, setInput] = useState('');
   const [messageToolCalls, setMessageToolCalls] = useState<Record<string, ToolCall[]>>({});
   const [currentRequestToolCalls, setCurrentRequestToolCalls] = useState<ToolCall[]>([]);
+
+  // Set initial professor from URL parameter
+  useEffect(() => {
+    const professorParam = searchParams.get('professor') as ProfessorKey;
+    if (professorParam && Object.keys(PROFESSORS).includes(professorParam)) {
+      setSelectedProfessor(professorParam);
+    }
+  }, [searchParams]);
   
   const { messages, sendMessage, error, status, addToolResult } = useChat({
     transport: new DefaultChatTransport({
@@ -196,17 +206,39 @@ export default function HogwartsChat({ className }: HogwartsChatProps) {
 
   return (
     <div className={className}>
-      {/* Professor Selection */}
-      <Card className="mb-4 border-amber-200">
-        <CardContent className="p-4">
-          <div className="flex flex-col sm:flex-row gap-4 items-center">
-            <label className="font-semibold text-amber-800">Choose your Professor:</label>
+      {/* Chat Interface */}
+      <Card className="border-amber-200 shadow-xl">
+        <CardHeader className="pb-0 bg-gradient-to-r from-amber-50 to-amber-100">
+          {/* Main Title Section */}
+          <div className="text-center mt-2 mb-0 border-b border-amber-200 pb-4">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <Wand2 className="h-6 w-6 text-amber-600" />
+              <CardTitle className="text-2xl font-bold text-amber-800">
+                Arcanum Research Console
+              </CardTitle>
+              <Sparkles className="h-6 w-6 text-amber-600" />
+            </div>
+            <p className="text-sm text-amber-700">
+              Advanced AI research platform with web analysis, image generation, document processing, and comprehensive data insights
+            </p>
+          </div>
+          
+          {/* Professor Selection Section */}
+          <div className="pt-2 pb-4 flex items-center justify-between">
             <Select
               value={selectedProfessor}
               onValueChange={handleProfessorChange}
             >
-              <SelectTrigger className="w-full sm:w-80 border-amber-300">
-                <SelectValue />
+              <SelectTrigger className="flex items-center gap-3 border-0 bg-amber-50/50 p-3 h-auto hover:bg-amber-100/70 rounded-lg transition-all duration-200 hover:shadow-md">
+                <Avatar className="h-12 w-12 ring-2 ring-amber-200">
+                  <AvatarFallback className="text-xl bg-amber-200">
+                    {currentProfessor.avatar}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="text-left flex-1">
+                  <div className="font-semibold text-amber-800 text-base">{currentProfessor.name}</div>
+                  <p className="text-sm text-amber-600">{currentProfessor.title}</p>
+                </div>
               </SelectTrigger>
               <SelectContent>
                 {Object.entries(PROFESSORS).map(([key, prof]) => (
@@ -226,23 +258,6 @@ export default function HogwartsChat({ className }: HogwartsChatProps) {
               {currentProfessor.house}
             </Badge>
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Chat Interface */}
-      <Card className="border-amber-200 shadow-xl">
-        <CardHeader className="bg-gradient-to-r from-amber-50 to-amber-100">
-          <div className="flex items-center gap-3">
-            <Avatar className="h-12 w-12">
-              <AvatarFallback className="text-2xl bg-amber-200">
-                {currentProfessor.avatar}
-              </AvatarFallback>
-            </Avatar>
-            <div>
-              <CardTitle className="text-amber-800">{currentProfessor.name}</CardTitle>
-              <p className="text-sm text-amber-600">{currentProfessor.title}</p>
-            </div>
-          </div>
         </CardHeader>
         
         <CardContent className="p-0">
@@ -256,7 +271,7 @@ export default function HogwartsChat({ className }: HogwartsChatProps) {
                     Welcome to {currentProfessor.name}'s office!
                   </p>
                   <p className="text-sm text-amber-600 mt-2">
-                    Start your research journey with AI-powered assistance, image generation, and comprehensive analysis!
+                    Advanced AI-powered research platform featuring web analysis, document processing, image generation, and comprehensive data insights!
                   </p>
                   <p className="text-xs text-amber-500 mt-1">
                     Try: "Create an image of a magical potion brewing" or "Search for Harry Potter facts"

@@ -578,8 +578,7 @@ export default function HogwartsChat() {
                 <Input
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder={`Ask ${currentProfessor.name} to research anything... Try "Create an image of..." "Analyze this URL..." or "Research..."`}
-                  className="flex-1 border-amber-300 focus:border-amber-500 focus:ring-amber-500"
+                  placeholder={currentProfessor.placeholder}
                   disabled={showThinking}
                 />
                 

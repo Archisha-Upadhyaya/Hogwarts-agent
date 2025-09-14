@@ -112,14 +112,6 @@ export default function HogwartsChat() {
     async onToolCall({ toolCall }) {
       const toolPurpose = TOOL_PURPOSES[toolCall.toolName] || "Executing specialized research tool";
       
-      // Handle navigate_to_page tool call immediately
-      if (toolCall.toolName === 'navigate_to_page') {
-        const url = (toolCall.input as any)?.url;
-        if (url) {
-          window.open(url, '_blank', 'noopener,noreferrer');
-        }
-      }
-      
       // Create tool call object
       const newToolCall: ToolCall = {
         id: toolCall.toolCallId,
@@ -136,8 +128,24 @@ export default function HogwartsChat() {
         newToolCall
       ]);
 
-      // For client-side only tools, update status but keep in the list
-      if (!toolCall.dynamic) {
+    // Handle navigate_to_page tool call immediately
+    if (toolCall.toolName === 'navigate_to_page') {
+        const url = (toolCall.input as any)?.url;
+        if (url) {
+            window.open(url, '_blank', 'noopener,noreferrer');
+            const completedToolCall: ToolCall = {
+                ...newToolCall,
+                status: 'completed'
+            };
+            setCurrentRequestToolCalls(prev =>
+                prev.map(tc =>
+                    tc.id === toolCall.toolCallId ? completedToolCall : tc
+                )
+            );
+        }
+    }
+    // For other client-side only tools, update status but keep in the list
+    else if (!toolCall.dynamic) {
         setTimeout(() => {
           const completedToolCall: ToolCall = {
             ...newToolCall,
@@ -430,10 +438,9 @@ export default function HogwartsChat() {
                   </Avatar>
                   <div className="bg-amber-50 text-amber-900 border border-amber-200 p-3 rounded-lg shadow-md min-w-[200px]">
                     <div className="flex items-center gap-2">
-                      <Sparkles className="h-4 w-4 animate-pulse" />
+                      <Sparkles className="h-4 w-4 text-amber-500 animate-[spin_3s_linear_infinite] drop-shadow-[0_0_8px_rgba(245,158,11,0.8)]" />
                       <div className="flex-1">
                         <div className="text-sm font-medium">{currentProfessor.name} is thinking...</div>
-                        <div className="text-xs text-amber-700 mt-1">Processing your request</div>
                       </div>
                     </div>
                     <div className="mt-2 h-1 bg-amber-200 rounded-full overflow-hidden">

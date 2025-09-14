@@ -265,7 +265,7 @@ export default function HogwartsChat() {
                     <div className="flex items-center gap-2">
                       <span className="text-lg">{prof.avatar}</span>
                       <div>
-                        <div className="font-medium">{prof.name}</div>
+                        <div className="font-medium text-black">{prof.name}</div>
                         <div className="text-xs text-gray-500">{prof.description}</div>
                       </div>
                     </div>

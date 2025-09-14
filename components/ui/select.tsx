@@ -25,7 +25,7 @@ function SelectValue({
 }
 
 function SelectTrigger({
-  className,
+  className="focus:outline-none focus:ring-0",
   size = 'default',
   children,
   ...props

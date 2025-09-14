@@ -149,14 +149,7 @@ export function ToolCallDisplay({
               prompt={result.prompt || 'Generated image'}
               uploadInfo={result.uploadInfo}
             />
-          ) : (
-            <>
-              <div className="text-xs font-medium opacity-75 mb-1">Result:</div>
-              <div className="text-xs bg-black/5 rounded p-2">
-                {typeof result === 'string' ? result : JSON.stringify(result, null, 2)}
-              </div>
-            </>
-          )}
+          ) : null}
         </div>
       )}
 

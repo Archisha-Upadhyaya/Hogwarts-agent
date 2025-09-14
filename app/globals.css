@@ -9,7 +9,7 @@
   --foreground: #1e3a78;
   --card: #f8e9b9;
   --card-foreground: #1e3a78;
-  --popover: #7c1f1f;
+  --popover: #f8e9b9;
   --popover-foreground: #ffffff;
   --primary: #1e3a78;
   --primary-foreground: #ffffff;
@@ -143,14 +143,11 @@
 }
 
 @keyframes sparkle {
-  0%,
-  100% {
-    opacity: 0.3;
-    transform: scale(0.8);
+  0% {
+    background-position: 0 0;
   }
-  50% {
-    opacity: 1;
-    transform: scale(1.2);
+  100% {
+    background-position: 200px 100px;
   }
 }
 
@@ -199,5 +196,5 @@
     radial-gradient(2px 2px at 160px 30px, #f0c14b, transparent);
   background-repeat: repeat;
   background-size: 200px 100px;
-  animation: sparkle 4s linear infinite;
+  animation: sparkle 10s linear infinite;
 }

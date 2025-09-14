@@ -82,12 +82,7 @@ export function GeneratedImageDisplay({ url, prompt, uploadInfo }: GeneratedImag
       </div>
 
       {/* Image Info */}
-      <div className="px-3 pb-3">
-        <div className="text-xs font-medium text-blue-700 mb-1">Prompt:</div>
-        <div className="text-xs text-blue-800 bg-blue-100 rounded p-2 mb-2">
-          {prompt}
-        </div>
-        
+      <div className="px-3 pb-3">        
         {uploadInfo && (
           <div className="flex items-center gap-2 text-xs text-blue-600">
             <Badge variant="outline" className="text-xs">

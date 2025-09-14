@@ -425,7 +425,7 @@ export default function HogwartsAILanding() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-primary text-primary-foreground py-16">
+      <footer className="bg-primary text-primary-foreground pt-16 pb-8">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
@@ -518,7 +518,7 @@ export default function HogwartsAILanding() {
           </div>
 
           <div className="border-t border-primary-foreground/20 mt-12 pt-8 text-center">
-            <p className="text-primary-foreground/60">© 2024 Arcanum Research. All rights reserved. Research responsibly.</p>
+            <p className="text-primary-foreground/60">© 2025 Arcanum Research. All rights reserved. Research responsibly.</p>
           </div>
         </div>
       </footer>

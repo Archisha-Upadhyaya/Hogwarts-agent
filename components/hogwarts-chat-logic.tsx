@@ -2,7 +2,7 @@
 
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,6 +12,24 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Send, Sparkles, Image as ImageIcon, ExternalLink, Loader2 } from 'lucide-react';
 import { Professor, ProfessorKey, HogwartsChatProps, ToolCall } from '@/types/chat';
+import { ToolCallDisplay } from './tool-call-display';
+
+const TOOL_PURPOSES: Record<string, string> = {
+  navigate_to_page: "Opening external webpage for research",
+  createImage: "Generating visual content using AI",
+  search: "Searching the web for information",
+  youtubeSearch: "Finding relevant video content",
+  webSearch: "Conducting comprehensive web research",
+  urlContext: "Analyzing webpage content",
+  imageAnalysis: "Analyzing uploaded images",
+  videoGeneration: "Creating video content",
+  dataVisualization: "Creating charts and graphs",
+  documentAnalysis: "Processing and analyzing documents",
+  translation: "Translating text between languages",
+  codeGeneration: "Generating code solutions",
+  textSummary: "Summarizing large text content",
+  sentimentAnalysis: "Analyzing emotional tone of text"
+};
 
 const PROFESSORS: Record<ProfessorKey, Professor> = {
   dumbledore: {
@@ -67,59 +85,81 @@ const PROFESSORS: Record<ProfessorKey, Professor> = {
 export default function HogwartsChat({ className }: HogwartsChatProps) {
   const [selectedProfessor, setSelectedProfessor] = useState<ProfessorKey>('dumbledore');
   const [input, setInput] = useState('');
-  const [activeToolCalls, setActiveToolCalls] = useState<ToolCall[]>([]);
+  const [messageToolCalls, setMessageToolCalls] = useState<Record<string, ToolCall[]>>({});
+  const [currentRequestToolCalls, setCurrentRequestToolCalls] = useState<ToolCall[]>([]);
   
   const { messages, sendMessage, error, status, addToolResult } = useChat({
     transport: new DefaultChatTransport({
       api: '/api/chat',
     }),
     async onToolCall({ toolCall }) {
-      console.log('Tool called:', toolCall.toolName, toolCall.input);
+      const toolPurpose = TOOL_PURPOSES[toolCall.toolName] || "Executing specialized research tool";
       
       // Handle navigate_to_page tool call immediately
       if (toolCall.toolName === 'navigate_to_page') {
         const url = (toolCall.input as any)?.url;
         if (url) {
-          console.log('Opening URL in new tab:', url);
           window.open(url, '_blank', 'noopener,noreferrer');
         }
       }
       
-      // Update active tool calls for UI feedback
-      setActiveToolCalls(prev => [
+      // Create tool call object
+      const newToolCall: ToolCall = {
+        id: toolCall.toolCallId,
+        toolName: toolCall.toolName,
+        args: toolCall.input,
+        status: 'pending',
+        purpose: toolPurpose,
+        startTime: Date.now(),
+      };
+
+      // Add to current request tool calls
+      setCurrentRequestToolCalls(prev => [
         ...prev.filter(tc => tc.id !== toolCall.toolCallId),
-        {
-          id: toolCall.toolCallId,
-          toolName: toolCall.toolName,
-          args: toolCall.input,
-          status: 'pending'
-        }
+        newToolCall
       ]);
 
-      // For client-side only tools, we need to add dummy results
-      // since the actual execution happens in the tool itself
+      // For client-side only tools, update status but keep in the list
       if (!toolCall.dynamic) {
-        // Add a small delay to show the pending state
         setTimeout(() => {
-          setActiveToolCalls(prev => 
+          const completedToolCall: ToolCall = {
+            ...newToolCall,
+            status: 'completed'
+          };
+          
+          // Update the tool call status in current request
+          setCurrentRequestToolCalls(prev => 
             prev.map(tc => 
-              tc.id === toolCall.toolCallId 
-                ? { ...tc, status: 'completed' } 
-                : tc
+              tc.id === toolCall.toolCallId ? completedToolCall : tc
             )
           );
-          
-          // Remove from active after another delay
-          setTimeout(() => {
-            setActiveToolCalls(prev => prev.filter(tc => tc.id !== toolCall.toolCallId));
-          }, 2000);
-        }, 1000);
+        }, 2000);
       }
     },
   });
 
   const currentProfessor = PROFESSORS[selectedProfessor];
   const isLoading = status === 'streaming';
+
+  // Automatically attach tool calls to the latest assistant message when it's complete
+  useEffect(() => {
+    if (!isLoading && currentRequestToolCalls.length > 0) {
+      const lastAssistantMessage = messages.filter(m => m.role === 'assistant').pop();
+      if (lastAssistantMessage && !messageToolCalls[lastAssistantMessage.id]) {
+        // Calculate final duration for each tool call before storing
+        const toolCallsWithDuration = currentRequestToolCalls.map(toolCall => ({
+          ...toolCall,
+          duration: toolCall.startTime ? Date.now() - toolCall.startTime : undefined
+        }));
+        
+        setMessageToolCalls(prev => ({
+          ...prev,
+          [lastAssistantMessage.id]: toolCallsWithDuration
+        }));
+        setCurrentRequestToolCalls([]);
+      }
+    }
+  }, [isLoading, messages, currentRequestToolCalls, messageToolCalls]);
 
   const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
@@ -196,18 +236,6 @@ export default function HogwartsChat({ className }: HogwartsChatProps) {
         </CardHeader>
         
         <CardContent className="p-0">
-          {/* Active Tool Calls Indicator */}
-          {activeToolCalls.length > 0 && (
-            <div className="px-4 py-2 bg-blue-50 border-b border-blue-200">
-              <div className="flex items-center gap-2 text-sm text-blue-700">
-                <Loader2 className="h-4 w-4 animate-spin" />
-                <span>
-                  {activeToolCalls.map(tc => tc.toolName).join(', ')} in progress...
-                </span>
-              </div>
-            </div>
-          )}
-
           {/* Messages */}
           <ScrollArea className="h-96 p-4">
             <div className="space-y-4">
@@ -218,7 +246,7 @@ export default function HogwartsChat({ className }: HogwartsChatProps) {
                     Welcome to {currentProfessor.name}'s office!
                   </p>
                   <p className="text-sm text-amber-600 mt-2">
-                    Ask questions, request magical knowledge, or ask for images to be created!
+                    Start your research journey with AI-powered assistance, image generation, and comprehensive analysis!
                   </p>
                   <p className="text-xs text-amber-500 mt-1">
                     Try: "Create an image of a magical potion brewing" or "Search for Harry Potter facts"
@@ -322,6 +350,39 @@ export default function HogwartsChat({ className }: HogwartsChatProps) {
                         No content available
                       </div>
                     )}
+
+                    {/* Display persistent tool calls for this message */}
+                    {messageToolCalls[message.id]?.map((toolCall) => (
+                      <ToolCallDisplay
+                        key={toolCall.id}
+                        toolName={toolCall.toolName}
+                        purpose={toolCall.purpose || ''}
+                        status={toolCall.status}
+                        args={toolCall.args}
+                        result={toolCall.result}
+                        error={toolCall.error}
+                        startTime={toolCall.startTime}
+                        duration={toolCall.duration}
+                      />
+                    ))}
+
+                    {/* Show current request tool calls for the last assistant message */}
+                    {message.role === 'assistant' && 
+                     message === messages.filter(m => m.role === 'assistant').pop() && 
+                     currentRequestToolCalls.length > 0 &&
+                     currentRequestToolCalls.map((toolCall) => (
+                      <ToolCallDisplay
+                        key={`current-${toolCall.id}`}
+                        toolName={toolCall.toolName}
+                        purpose={toolCall.purpose || ''}
+                        status={toolCall.status}
+                        args={toolCall.args}
+                        result={toolCall.result}
+                        error={toolCall.error}
+                        startTime={toolCall.startTime}
+                        duration={toolCall.startTime ? Date.now() - toolCall.startTime : undefined}
+                      />
+                    ))}
                   </div>
                   
                   {message.role === 'user' && (
@@ -341,10 +402,16 @@ export default function HogwartsChat({ className }: HogwartsChatProps) {
                       {currentProfessor.avatar}
                     </AvatarFallback>
                   </Avatar>
-                  <div className="bg-amber-50 text-amber-900 border border-amber-200 p-3 rounded-lg shadow-md">
+                  <div className="bg-amber-50 text-amber-900 border border-amber-200 p-3 rounded-lg shadow-md min-w-[200px]">
                     <div className="flex items-center gap-2">
                       <Sparkles className="h-4 w-4 animate-pulse" />
-                      <span className="text-sm">{currentProfessor.name} is thinking...</span>
+                      <div className="flex-1">
+                        <div className="text-sm font-medium">{currentProfessor.name} is researching...</div>
+                        <div className="text-xs text-amber-700 mt-1">Processing your request</div>
+                      </div>
+                    </div>
+                    <div className="mt-2 h-1 bg-amber-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-amber-400 rounded-full animate-pulse"></div>
                     </div>
                   </div>
                 </div>
@@ -365,7 +432,7 @@ export default function HogwartsChat({ className }: HogwartsChatProps) {
               <Input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder={`Ask ${currentProfessor.name} anything... Try "Create an image of..." or "Search for..."`}
+                placeholder={`Ask ${currentProfessor.name} to research anything... Try "Create an image of..." "Analyze this URL..." or "Research..."`}
                 className="flex-1 border-amber-300 focus:border-amber-500 focus:ring-amber-500"
                 disabled={isLoading}
               />
@@ -379,7 +446,7 @@ export default function HogwartsChat({ className }: HogwartsChatProps) {
             </form>
             <div className="mt-2 text-xs text-amber-600 flex items-center gap-1">
               <ImageIcon className="h-3 w-3" />
-              <span>Tip: Ask to create, draw, or generate images for magical visual responses!</span>
+              <span>Research capabilities: URL analysis, image generation, web search, document processing, and more!</span>
             </div>
           </div>
         </CardContent>

@@ -20,4 +20,7 @@ export interface ToolCall {
   status: 'pending' | 'completed' | 'error';
   result?: any;
   error?: string;
+  purpose?: string;
+  startTime?: number;
+  duration?: number;
 }

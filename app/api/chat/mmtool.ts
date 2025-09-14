@@ -118,23 +118,95 @@ const multimedia_tools = {
                 const videoData = await response.json();
                 console.log('FAL video generation response:', videoData);
                 
-                if (!videoData.video?.url) {
-                    throw new Error('No video URL returned from FAL API');
-                }
-
-                console.log('Video created successfully:', videoData.video.url);
-
-                return {
-                    type: 'video',
-                    url: videoData.video.url,
-                    prompt: videoData.prompt || prompt,
-                    videoInfo: {
-                        resolution: '720p',
-                        aspect_ratio,
-                        num_frames: 121,
-                        frame_rate: 24
+                // Check if we got a queue response
+                if (videoData.status === 'IN_QUEUE' && videoData.request_id) {
+                    const requestId = videoData.request_id;
+                    console.log('Video request queued, polling for completion...', requestId);
+                    
+                    // Poll for completion (with timeout)
+                    const maxAttempts = 60; // 5 minutes max (5 second intervals)
+                    let attempts = 0;
+                    
+                    while (attempts < maxAttempts) {
+                        await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5 seconds
+                        attempts++;
+                        
+                        console.log(`Checking video status (attempt ${attempts}/${maxAttempts})...`);
+                        
+                        // Check status
+                        const statusResponse = await fetch(`https://queue.fal.run/fal-ai/ltxv-13b-098-distilled/requests/${requestId}/status`, {
+                            method: 'GET',
+                            headers: {
+                                'Authorization': `Key ${fal_apiKey}`,
+                            }
+                        });
+                        
+                        if (!statusResponse.ok) {
+                            throw new Error(`Failed to check video status: ${statusResponse.status} ${statusResponse.statusText}`);
+                        }
+                        
+                        const statusData = await statusResponse.json();
+                        console.log('Video status:', statusData.status);
+                        
+                        if (statusData.status === 'COMPLETED') {
+                            // Get the final result
+                            const resultResponse = await fetch(`https://queue.fal.run/fal-ai/ltxv-13b-098-distilled/requests/${requestId}`, {
+                                method: 'GET',
+                                headers: {
+                                    'Authorization': `Key ${fal_apiKey}`,
+                                }
+                            });
+                            
+                            if (!resultResponse.ok) {
+                                throw new Error(`Failed to fetch video result: ${resultResponse.status} ${resultResponse.statusText}`);
+                            }
+                            
+                            const resultData = await resultResponse.json();
+                            console.log('Video generation completed:', resultData);
+                            
+                            if (!resultData.video?.url) {
+                                throw new Error('No video URL in completed result');
+                            }
+                            
+                            console.log('Video created successfully:', resultData.video.url);
+                            
+                            return {
+                                type: 'video',
+                                url: resultData.video.url,
+                                prompt: resultData.prompt || prompt,
+                                videoInfo: {
+                                    resolution: '720p',
+                                    aspect_ratio,
+                                    num_frames: 121,
+                                    frame_rate: 24
+                                }
+                            };
+                        } else if (statusData.status === 'FAILED') {
+                            throw new Error(`Video generation failed: ${statusData.error || 'Unknown error'}`);
+                        }
+                        // Continue polling if status is still IN_PROGRESS or IN_QUEUE
                     }
-                };
+                    
+                    // Timeout reached
+                    throw new Error('Video generation timed out after 5 minutes');
+                } else if (videoData.video?.url) {
+                    // Direct response (fallback for immediate results)
+                    console.log('Video created successfully (direct response):', videoData.video.url);
+                    
+                    return {
+                        type: 'video',
+                        url: videoData.video.url,
+                        prompt: videoData.prompt || prompt,
+                        videoInfo: {
+                            resolution: '720p',
+                            aspect_ratio,
+                            num_frames: 121,
+                            frame_rate: 24
+                        }
+                    };
+                } else {
+                    throw new Error('Unexpected response format from FAL API');
+                }
             } catch (error) {
                 console.error('Error creating video:', error);
                 return {

@@ -14,6 +14,7 @@ import {
   BarChart3,
   Play
 } from 'lucide-react';
+import { GeneratedImageDisplay } from './generated-image-display';
 
 interface ToolCallDisplayProps {
   toolName: string;
@@ -142,10 +143,20 @@ export function ToolCallDisplay({
       {/* Result */}
       {status === 'completed' && result && (
         <div className="mb-2">
-          <div className="text-xs font-medium opacity-75 mb-1">Result:</div>
-          <div className="text-xs bg-black/5 rounded p-2">
-            {typeof result === 'string' ? result : JSON.stringify(result, null, 2)}
-          </div>
+          {toolName === 'createImage' && result.type === 'image' && result.url ? (
+            <GeneratedImageDisplay
+              url={result.url}
+              prompt={result.prompt || 'Generated image'}
+              uploadInfo={result.uploadInfo}
+            />
+          ) : (
+            <>
+              <div className="text-xs font-medium opacity-75 mb-1">Result:</div>
+              <div className="text-xs bg-black/5 rounded p-2">
+                {typeof result === 'string' ? result : JSON.stringify(result, null, 2)}
+              </div>
+            </>
+          )}
         </div>
       )}
 

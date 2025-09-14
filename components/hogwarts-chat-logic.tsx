@@ -83,7 +83,7 @@ const PROFESSORS: Record<ProfessorKey, Professor> = {
 },
 };
 
-export default function HogwartsChat({ className }: HogwartsChatProps) {
+export default function HogwartsChat() {
   const searchParams = useSearchParams();
   const [selectedProfessor, setSelectedProfessor] = useState<ProfessorKey>('dumbledore');
   const [input, setInput] = useState('');
@@ -205,10 +205,10 @@ export default function HogwartsChat({ className }: HogwartsChatProps) {
   }, []);
 
   return (
-    <div className={className}>
+    <div className="bg-transparent">
       {/* Chat Interface */}
-      <Card className="border-amber-200 shadow-xl">
-        <CardHeader className="pb-0 bg-gradient-to-r from-amber-50 to-amber-100">
+      <Card className="border-amber-200 shadow-xl py-0 gap-0.5">
+        <CardHeader className="pb-0 bg-gradient-to-r from-amber-50 to-amber-100 rounded-t-xl">
           {/* Main Title Section */}
           <div className="text-center mt-2 mb-0 border-b border-amber-200 pb-4">
             <div className="flex items-center justify-center gap-2 mb-2">
@@ -467,5 +467,6 @@ export default function HogwartsChat({ className }: HogwartsChatProps) {
         </CardContent>
       </Card>
     </div>
+
   );
 }

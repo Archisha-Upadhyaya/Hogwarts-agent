@@ -78,16 +78,16 @@ const PROFESSORS: Record<ProfessorKey, Professor> = {
       "Energetic and inventive, skilled in creative content, visuals, data, and automation workflows.",
     placeholder: "Ask for creative content, visuals, or automation...",
   },
-  archivist: {
-    name: "Hogwarts Archivist",
-    title: "Keeper of Records",
-    house: "None",
-    avatar: "📜",
-    color: "bg-gray-100 text-gray-800",
-    description:
-      "Neutral and factual, provides plain, precise answers without flourish.",
-    placeholder: "Ask for a direct, factual answer...",
-  },
+pince: {
+  name: "Madam Pince",
+  title: "Librarian and Document Analyst",
+  house: "None",
+  avatar: "📚",
+  color: "bg-amber-100 text-amber-900",
+  description:
+    "Meticulous and sharp-eyed, specializes in reading, dissecting, and cross-referencing documents.",
+  placeholder: "Hand me a text, and I shall analyze it with care...",
+}
 };
 
 export default function HogwartsChat() {

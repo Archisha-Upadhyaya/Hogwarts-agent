@@ -155,9 +155,9 @@ export default function HogwartsAILanding() {
     specialty: "Creative Generation",
   },
   {
-    name: "Hogwarts Archivist",
-    key: "archivist",
-    avatar: "📜",
+    name: "Madam Pince",
+    key: "pince",
+    avatar: "�",
     subject: "Archival Research & Records",
     description:
       "Plain, factual record-keeping, systematic documentation, and precise reference for integrity.",

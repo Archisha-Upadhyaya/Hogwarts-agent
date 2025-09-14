@@ -20,6 +20,11 @@ const tavily_client = tavily({
     apiKey: tavily_apiKey,
 })
 
+const imgbb_apiKey = process.env.IMGBB_API_KEY
+if (!imgbb_apiKey) {
+    throw new Error('IMGBB_API_KEY is not set in environment variables')
+}
+
 export const tools = {
     // Navigation tool for general application pages
     navigate_to_page: tool({
@@ -101,16 +106,54 @@ export const tools = {
             prompt: z.string().describe('The prompt to create an image based on'),
         }),
         execute: async ({ prompt }: { prompt: any }) => {
-            const result = await generateImage({
-                model: fal.image("fal-ai/flux/schnell"),
-                prompt,
-            });
-            
-            return {
-                type: 'image',
-                image: result.image.base64,
-                prompt: prompt
-            };
+            try {
+                // Generate image using FAL
+                const result = await generateImage({
+                    model: fal.image("fal-ai/flux/schnell"),
+                    prompt,
+                });
+                
+                // Upload to ImgBB using direct POST request
+                console.log('Uploading image to ImgBB with prompt:', prompt);
+                
+                const formData = new FormData();
+                formData.append('image', result.image.base64);
+                
+                const uploadResponse = await fetch(`https://api.imgbb.com/1/upload?expiration=600&key=${imgbb_apiKey}`, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (!uploadResponse.ok) {
+                    throw new Error(`ImgBB upload failed: ${uploadResponse.status} ${uploadResponse.statusText}`);
+                }
+
+                const uploadData = await uploadResponse.json();
+                
+                if (!uploadData.success) {
+                    throw new Error(`ImgBB upload failed: ${uploadData.error?.message || 'Unknown error'}`);
+                }
+
+                console.log('Image uploaded successfully:', uploadData.data.url);
+
+                return {
+                    type: 'image',
+                    url: uploadData.data.url,
+                    prompt: prompt,
+                    uploadInfo: {
+                        id: uploadData.data.id,
+                        title: uploadData.data.title,
+                        size: uploadData.data.size
+                    }
+                };
+            } catch (error) {
+                console.error('Error generating or uploading image:', error);
+                return {
+                    type: 'error',
+                    message: 'Failed to generate or upload image',
+                    error: String(error)
+                };
+            }
         },
     }),
 

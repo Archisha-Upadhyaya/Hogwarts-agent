@@ -11,6 +11,18 @@ export async function POST(req: Request) {
   
   const selectedProfessor = PROFESSORS[professor] || PROFESSORS.dumbledore;
   console.log(`${selectedProfessor.name} has heard your plea!`);
+  
+  // Log file attachments in messages if present
+  messages.forEach((message, index) => {
+    if (message.parts) {
+      const fileParts = message.parts.filter(part => part.type === 'file');
+      if (fileParts.length > 0) {
+        console.log(`Message ${index} contains ${fileParts.length} file(s):`, 
+          fileParts.map(file => ({ filename: file.filename, mediaType: file.mediaType }))
+        );
+      }
+    }
+  });
 
   const result = streamText({
     model: google('gemini-2.5-flash'),

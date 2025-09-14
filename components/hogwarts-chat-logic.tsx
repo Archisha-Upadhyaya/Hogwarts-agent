@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Send, Sparkles, Image as ImageIcon, ExternalLink, Loader2, Wand2 } from 'lucide-react';
+import { Send, Sparkles, Image as ImageIcon, ExternalLink, Loader2, Wand2, Paperclip, X, FileText } from 'lucide-react';
 import { Professor, ProfessorKey, HogwartsChatProps, ToolCall } from '@/types/chat';
 import { ToolCallDisplay } from './tool-call-display';
 
@@ -84,8 +84,10 @@ export default function HogwartsChat() {
   const [messageToolCalls, setMessageToolCalls] = useState<Record<string, ToolCall[]>>({});
   const [currentRequestToolCalls, setCurrentRequestToolCalls] = useState<ToolCall[]>([]);
   const [isThinking, setIsThinking] = useState(false);
+  const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Set initial professor from URL parameter
   useEffect(() => {
@@ -200,17 +202,75 @@ export default function HogwartsChat() {
     }
   }, [isLoading, messages, currentRequestToolCalls, messageToolCalls]);
 
+  const handleProfessorChange = useCallback((value: ProfessorKey) => {
+    console.log('Professor changed to:', value);
+    setSelectedProfessor(value);
+  }, []);
+
+  const handleFileSelect = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      // Filter only allowed file types
+      const allowedTypes = [
+        'image/jpeg','image/jpg', 'image/png', 'image/gif', 'image/webp',
+        'application/pdf',
+        'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'text/plain', 'text/csv', 'application/json'
+      ];
+      
+      const validFiles = Array.from(files).filter(file => 
+        allowedTypes.includes(file.type) && file.size <= 10 * 1024 * 1024 // 10MB limit
+      );
+      
+      if (validFiles.length > 0) {
+        const fileList = new DataTransfer();
+        validFiles.forEach(file => fileList.items.add(file));
+        setSelectedFiles(fileList.files);
+      } else {
+        alert('Please select valid files (images, PDFs, or documents) under 10MB');
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
+      }
+    }
+  }, []);
+
+  const removeFile = useCallback((index: number) => {
+    if (selectedFiles) {
+      const newFiles = new DataTransfer();
+      Array.from(selectedFiles).forEach((file, i) => {
+        if (i !== index) {
+          newFiles.items.add(file);
+        }
+      });
+      setSelectedFiles(newFiles.files.length > 0 ? newFiles.files : null);
+      if (fileInputRef.current && newFiles.files.length === 0) {
+        fileInputRef.current.value = '';
+      }
+    }
+  }, [selectedFiles]);
+
+  const clearFiles = useCallback(() => {
+    setSelectedFiles(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  }, []);
+
   const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
-    if (input.trim()) {
+    if (input.trim() || selectedFiles) {
       console.log('Sending message with professor:', selectedProfessor);
       
       // Show thinking state immediately
       setIsThinking(true);
       
-      // Pass the current professor in the request body (not hook-level)
+      // Pass the current professor in the request body and files if selected
       sendMessage(
-        { text: input },
+        { 
+          text: input,
+          files: selectedFiles || undefined
+        },
         {
           body: {
             professor: selectedProfessor,
@@ -218,18 +278,14 @@ export default function HogwartsChat() {
         }
       );
       setInput('');
+      clearFiles();
     }
-  }, [input, selectedProfessor, sendMessage]);
-
-  const handleProfessorChange = useCallback((value: ProfessorKey) => {
-    console.log('Professor changed to:', value);
-    setSelectedProfessor(value);
-  }, []);
+  }, [input, selectedFiles, selectedProfessor, sendMessage, clearFiles]);
 
   return (
-    <div className="bg-transparent">
+    <div className="bg-transparent h-full">
       {/* Chat Interface */}
-      <Card className="border-amber-200 shadow-xl py-0 gap-0.5">
+      <Card className="border-amber-200 shadow-xl py-0 gap-0.5 h-full">
         <CardHeader className="pb-0 bg-gradient-to-r from-amber-50 to-amber-100 rounded-t-xl">
           {/* Main Title Section */}
           <div className="text-center mt-2 mb-0 border-b border-amber-200 pb-4">
@@ -343,6 +399,30 @@ export default function HogwartsChat() {
                             />
                           </div>
                         )}
+                        {part.type === 'file' && (
+                          <div className="mt-2">
+                            {part.mediaType?.startsWith('image/') ? (
+                              <div>
+                                <div className="flex items-center gap-2 mb-2 text-sm text-amber-600">
+                                  <ImageIcon className="h-4 w-4" />
+                                  <span>{part.filename || 'Uploaded Image'}</span>
+                                </div>
+                                <img
+                                  src={part.url}
+                                  alt={part.filename || 'Uploaded image'}
+                                  className="rounded-lg max-w-full h-auto shadow-md border border-amber-200"
+                                  loading="lazy"
+                                />
+                              </div>
+                            ) : (
+                              <div className="flex items-center gap-2 p-2 bg-amber-100 rounded text-sm text-amber-700 border border-amber-200">
+                                <FileText className="h-4 w-4" />
+                                <span>{part.filename || 'Uploaded File'}</span>
+                                <span className="text-xs text-amber-600">({part.mediaType})</span>
+                              </div>
+                            )}
+                          </div>
+                        )}
 
                         {part.type === 'tool-result' && (
                           <div className="mt-2 p-2 bg-amber-100 rounded text-xs">
@@ -450,17 +530,72 @@ export default function HogwartsChat() {
 
           {/* Input */}
           <div className="border-t border-amber-200 p-4 bg-amber-25">
+            {/* Selected Files Display */}
+            {selectedFiles && selectedFiles.length > 0 && (
+              <div className="mb-3 p-2 bg-amber-50 rounded-lg border border-amber-200">
+                <div className="text-xs text-amber-700 mb-2 font-medium">
+                  Attached Files ({selectedFiles.length}):
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {Array.from(selectedFiles).map((file, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center gap-2 px-2 py-1 bg-white rounded border border-amber-300 text-xs"
+                    >
+                      {file.type.startsWith('image/') ? (
+                        <ImageIcon className="h-3 w-3 text-amber-600" />
+                      ) : (
+                        <FileText className="h-3 w-3 text-amber-600" />
+                      )}
+                      <span className="max-w-24 truncate">{file.name}</span>
+                      <button
+                        type="button"
+                        onClick={() => removeFile(index)}
+                        className="text-amber-500 hover:text-red-600 transition-colors"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <form onSubmit={handleSubmit} className="flex gap-2">
-              <Input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder={`Ask ${currentProfessor.name} to research anything... Try "Create an image of..." "Analyze this URL..." or "Research..."`}
-                className="flex-1 border-amber-300 focus:border-amber-500 focus:ring-amber-500"
-                disabled={showThinking}
-              />
+              <div className="flex-1 flex gap-2">
+                <Input
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder={`Ask ${currentProfessor.name} to research anything... Try "Create an image of..." "Analyze this URL..." or "Research..."`}
+                  className="flex-1 border-amber-300 focus:border-amber-500 focus:ring-amber-500"
+                  disabled={showThinking}
+                />
+                
+                {/* Hidden File Input */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  onChange={handleFileSelect}
+                  multiple
+                  accept="image/*,.pdf,.doc,.docx,.txt,.csv,.json"
+                  className="hidden"
+                />
+                
+                {/* File Upload Button */}
+                <Button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={showThinking}
+                  className="bg-amber-500 hover:bg-amber-600 text-white px-3"
+                  title="Attach files (Images, PDFs, Documents)"
+                >
+                  <Paperclip className="h-4 w-4" />
+                </Button>
+              </div>
+              
               <Button
                 type="submit"
-                disabled={showThinking || !input.trim()}
+                disabled={showThinking || (!input.trim() && !selectedFiles)}
                 className="bg-amber-600 hover:bg-amber-700 text-white px-4"
               >
                 <Send className="h-4 w-4" />
@@ -468,7 +603,7 @@ export default function HogwartsChat() {
             </form>
             <div className="mt-2 text-xs text-amber-600 flex items-center gap-1">
               <ImageIcon className="h-3 w-3" />
-              <span>Research capabilities: URL analysis, image generation, web search, document processing, and more!</span>
+              <span>Research capabilities: URL analysis, image generation, web search, document processing, file analysis, and more!</span>
             </div>
           </div>
         </CardContent>

@@ -296,9 +296,9 @@ export default function HogwartsChat() {
   }, [input, selectedFiles, selectedProfessor, sendMessage, clearFiles]);
 
   return (
-    <div className="bg-transparent h-full">
+    <div className="bg-transparent h-full flex flex-col">
       {/* Chat Interface */}
-      <Card className="border-amber-200 shadow-xl py-0 gap-0.5 h-full">
+      <Card className="border-amber-200 shadow-xl py-0 gap-0.5 h-full flex flex-col overflow-hidden">
         <CardHeader className="pb-0 bg-gradient-to-r from-amber-50 to-amber-100 rounded-t-xl">
           {/* Main Title Section */}
           <div className="text-center mt-2 mb-0 border-b border-amber-200 pb-4">
@@ -351,9 +351,9 @@ export default function HogwartsChat() {
           </div>
         </CardHeader>
         
-        <CardContent className="p-0">
+        <CardContent className="p-0 flex-1 flex flex-col overflow-hidden">
           {/* Messages */}
-          <ScrollArea ref={scrollAreaRef} className="h-96 px-4 pt-4">
+          <ScrollArea ref={scrollAreaRef} className="flex-1 px-4 pt-4 overflow-y-auto">
             <div className="space-y-4">
               {messages.length === 0 && (
                 <div className="text-center py-8 text-gray-500">
